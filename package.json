@@ -1,0 +1,19 @@
+{
+  "version": "0.0.0",
+  "name": "xzs-chart",
+  "main": "xzs-chart.js",
+  "description": "动态图表组件，基于d3",
+  "scripts": {
+    "server": "node_modules/.bin/webpack --config ./dev.config.js  --watch"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-helper-get-function-arity": "^6.24.1",
+    "babel-loader": "^7.1.2",
+    "babel-preset-es2015": "^6.24.1",
+    "browserslist": "^2.4.0",
+    "d3": "^4.10.2",
+    "html-webpack-plugin": "^2.30.1",
+    "webpack": "^3.6.0"
+  }
+}
