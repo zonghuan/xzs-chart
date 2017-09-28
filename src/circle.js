@@ -28,19 +28,17 @@ export default (dom,width=400,height=400) => {
     }
     var ease = d3.easeBackOut
 
-    svg.selectAll('path').data(list,(data,index)=>index)
-      .enter().append('path')
+    var path = svg.selectAll('path').data(list,(data,index)=>index)
+
+    path.enter().append('path')
         .style('fill',(data,index)=>colors[index%colors.length])
         .attr('d',(data,index)=>arc(index))
-        .on('mouseover',function(e,index){
-          d3.select(this).transition().duration(200).attr('d',()=>arc(index,width*3.5/8)).attr('transform','scale(1,1)')
-        })
-        .on('mouseout',function(e,index){
-          d3.select(this).transition().duration(200).attr('d',()=>arc(index)).attr('transform','scale(1,1)')
-        })
         .attr('transform','scale(.01,.01)')
         .transition().duration(500).ease(ease).delay((data,index)=>index*200).attr('transform','scale(1,1)')
 
+    path.transition().duration(1000).attr('d',(data,index)=>arc(index)).attr('transform','scale(1,1)')
+
+    path.exit().transition().style('transform','scale(0,0)').remove()
 
   }
 
