@@ -1,9 +1,9 @@
 import chart from '../src'
 
-var update = chart.createCircle('#content',400,400)
+var update = chart.createCircle('#content',500,500)
 
 update([
-  {title:"数据1",data:100},
+  {title:"数据1数据1",data:100},
   {title:"数据2",data:200},
   {title:"数据3",data:300},
   {title:"数据4",data:400},
