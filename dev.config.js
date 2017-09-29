@@ -1,10 +1,25 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
+var entry = {
+  "circle":"./example/circle.js",
+  "line":"./example/line.js"
+}
+var plugins = []
+
+for(var i in entry){
+  plugins.push(
+    new HtmlWebpackPlugin({
+      chunks:[i],
+      title: 'Output Management',
+      template:'example/index.html',
+      filename:`${i}.html`
+    })
+  )
+}
+
 module.exports = {
-  entry: {
-    "circle":"./example/circle.js"
-  },
+  entry,
   module: {
     rules: [
       {
@@ -17,12 +32,7 @@ module.exports = {
       }
     ]
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      title: 'Output Management',
-      template:'example/index.html'
-    })
-  ],
+  plugins,
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist')
