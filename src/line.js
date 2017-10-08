@@ -12,7 +12,7 @@ export default (dom,width=400,height=400)=>{
       .attr('width',width)
       .attr('height',height)
 
-  var initData = [0,20,30,40,100]
+  var initData = []
 
   var createAxisY = domain => (
     d3.axisLeft(
@@ -31,6 +31,17 @@ export default (dom,width=400,height=400)=>{
 
   createAxisYg(createAxisY(Math.max.apply(Math,initData)))
 
+  var x = d3.scaleLinear()
+      .domain([0,length])
+      .range([padding,width-padding])
+
+  var path = svg
+      .append('path')
+      .attr('class','line-path')
+      .style('fill','transparent')
+      .style('stroke','#000')
+      .attr('transform',`translate(0,${padding})`)
+
   return obj=>{
 
     // obj => {title:"数据1",data:100}
@@ -43,12 +54,20 @@ export default (dom,width=400,height=400)=>{
       dataLink = dataLink.slice(dataLink.length-length,dataLink.length-1)
     }
 
-    var x = d3.scaleLinear()
-        .domain([0,dataLink.length])
-        .range([padding,width-padding])
+    // 左侧
+    var domain = Math.max.apply(Math,dataLink.map(d=>d.data))
+    var y = d3.scaleLinear()
+      .domain([0,domain])
+      .range([height-padding*2,padding])
 
     svg.select('.axis-y').remove()
-    createAxisYg(createAxisY(Math.max.apply(Math,dataLink.map(d=>d.data))))
+    createAxisYg(createAxisY(domain))
+
+    var line = d3.line()
+        .x((d,index)=>x(index))
+        .y(d=>y(d.data))
+
+    path.datum(dataLink).attr('d',line)
 
   }
 }
