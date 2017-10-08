@@ -6,13 +6,30 @@ export default (dom,width=400,height=400)=>{
   }
   var dataLink = []
   var length = 6
-  var padding = 10
+  var padding = 30
   var svg = d3.select(dom)
       .append('svg')
       .attr('width',width)
       .attr('height',height)
 
+  var initData = [0,20,30,40,100]
 
+  var createAxisY = domain => (
+    d3.axisLeft(
+      d3.scaleLinear()
+        .domain([0,domain])
+        .range([height-padding*2,padding])
+    )
+  )
+
+  var createAxisYg = axisY => (
+    svg.append('g')
+      .attr('class','axis-y')
+      .attr('transform',`translate(${padding},${padding})`)
+      .call(axisY)
+  )
+
+  createAxisYg(createAxisY(Math.max.apply(Math,initData)))
 
   return obj=>{
 
@@ -25,21 +42,13 @@ export default (dom,width=400,height=400)=>{
       dataLink.push(obj)
       dataLink = dataLink.slice(dataLink.length-length,dataLink.length-1)
     }
-    var y = d3
-        .scaleLinear()
-        .domain([0,Math.max.call(Math,dataLink)])
-        .range([padding,height-padding])
 
     var x = d3.scaleLinear()
         .domain([0,dataLink.length])
         .range([padding,width-padding])
 
-
-    // var axisX = svg.selectAll('g.axis-x')
-    // axisX.enter()
-    //   .append('g')
-    //   .attr('class','axis-x')
-    //   .call(d3.axisLeft(y))
+    svg.select('.axis-y').remove()
+    createAxisYg(createAxisY(Math.max.apply(Math,dataLink.map(d=>d.data))))
 
   }
 }
