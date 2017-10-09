@@ -1,6 +1,6 @@
 import chart from '../src'
 
-var update = chart.createLine('#content',500,500)
+var update = chart.createLine('#content',1000,500,1000)
 
 
 var randomTitle = ()=>`数据${Math.round(Math.random()*10)}`

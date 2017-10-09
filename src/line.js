@@ -1,5 +1,5 @@
 var d3 = require('d3')
-export default (dom,width=400,height=400)=>{
+export default (dom,width=400,height=400,duration=1000)=>{
 
   if(typeof(dom)==='string'){
     dom = document.querySelector(dom)
@@ -13,6 +13,15 @@ export default (dom,width=400,height=400)=>{
       .attr('height',height)
 
   var initData = []
+
+  // 定义裁剪区域
+  svg.append('defs')
+    .append('clipPath').attr('id','clip')
+      .append('rect')
+      .attr('x',padding)
+      .attr('y',padding)
+      .attr('width',width-padding)
+      .attr('height',height-padding)
 
   var createAxisY = domain => (
     d3.axisLeft(
@@ -32,10 +41,10 @@ export default (dom,width=400,height=400)=>{
   createAxisYg(createAxisY(Math.max.apply(Math,initData)))
 
   var x = d3.scaleLinear()
-      .domain([0,length])
-      .range([padding,width-padding])
+      .domain([0,length-1])
+      .range([padding,width])
 
-  var path = svg
+  var path = svg.append('g').attr('clip-path',"url(#clip)")
       .append('path')
       .attr('class','line-path')
       .style('fill','transparent')
@@ -44,15 +53,7 @@ export default (dom,width=400,height=400)=>{
 
   return obj=>{
 
-    // obj => {title:"数据1",data:100}
-    if(dataLink.length<length){
-      for(var i=0;i<length-dataLink.length;i++){
-        dataLink.push(obj)
-      }
-    }else{
-      dataLink.push(obj)
-      dataLink = dataLink.slice(dataLink.length-length,dataLink.length-1)
-    }
+    dataLink.push(obj)
 
     // 左侧
     var domain = Math.max.apply(Math,dataLink.map(d=>d.data))
@@ -64,10 +65,23 @@ export default (dom,width=400,height=400)=>{
     createAxisYg(createAxisY(domain))
 
     var line = d3.line()
+        .curve(d3.curveCardinal.tension(0.5))
         .x((d,index)=>x(index))
         .y(d=>y(d.data))
 
-    path.datum(dataLink).attr('d',line)
-
+    var offsetx = dataLink.length<length+1?0:(x(0)-x(1))
+    path.datum(dataLink)
+      .attr('d',line)
+      .attr('transform',`translate(0,${padding})`)
+      .transition()
+      .duration(duration-50)
+      .attr('transform',`translate(${offsetx},${padding})`)
+      .on('end',()=>{
+        if(offsetx===0){
+          return
+        }
+        dataLink.shift()
+        d3.select(this).datum(dataLink).attr('d',line).attr('transform',`translate(0,${padding})`)
+      })
   }
 }
