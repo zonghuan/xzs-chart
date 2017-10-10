@@ -65,13 +65,12 @@ export default (dom,width=400,height=400,duration=1000)=>{
     createAxisYg(createAxisY(domain))
 
     var line = d3.line()
-        .curve(d3.curveCardinal.tension(0.5))
+        //.curve(d3.curveCardinal.tension(0.5))
         .x((d,index)=>x(index))
         .y(d=>y(d.data))
 
     var offsetx = dataLink.length<length+1?0:(x(0)-x(1))
-    path.datum(dataLink)
-      .attr('d',line)
+    path.attr('d',line(dataLink))
       .attr('transform',`translate(0,${padding})`)
       .transition()
       .duration(duration-50)
