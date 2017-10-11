@@ -27,7 +27,7 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
       )
       .attr('fill',color)
 
-    var d = 6
+    var d = 3
     for(var i=0;i<d+1;i++){
       var corner = sr+st/d*i+index*st-st
       svg.append('rect')
@@ -36,8 +36,18 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
         .attr('fill',color)
         .attr('x',(r-14)*cos(corner)-5)
         .attr('y',(r-14)*sin(corner)-3)
-        .style('transform',`rotate(${corner/pi*180-180}deg)`)
+        .style('transform',`rotate(${corner/pi*180}deg)`)
         .style('transform-origin','50% 50%')
+
+      svg.append('text')
+        .attr('fill',color)
+        .attr('font-size','14')
+        .attr('x',(r-18)*cos(corner)-5)
+        .attr('y',(r-18)*sin(corner)-5)
+        .text(()=>{
+          return index*3+i
+        })
+
     }
     for(var j=0;j<d*d+1;j++){
       var corner = sr+st/d/d*j+index*st-st
@@ -47,7 +57,7 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
         .attr('fill',color)
         .attr('x',(r-12)*cos(corner)-2.5)
         .attr('y',(r-12)*sin(corner)-1)
-        .style('transform',`rotate(${corner/pi*180-180}deg)`)
+        .style('transform',`rotate(${corner/pi*180}deg)`)
         .style('transform-origin','50% 50%')
     }
   }
