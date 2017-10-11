@@ -38,6 +38,7 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
     }
     return 'grey'
   }
+  // 添加刻度
   for(var i=0;i<d+1;i++){
     var corner = sr+st*3/d*i-st
     var smn = 5
@@ -75,12 +76,17 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
     //   .attr('dx',-text.length/2*fontSize)
     //   .attr('dy',-fontSize/2)
     //   .text(text)
-
-
   }
 
+  // 添加圆弧
   createRadian(0,'grey')
   createRadian(1,'green')
   createRadian(2,'red')
+
+  //添加指针
+
+  return ()=>{
+
+  }
 
 }
