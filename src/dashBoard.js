@@ -1,6 +1,6 @@
 var d3 =  require('d3')
 
-export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表盘示例')=>{
+export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘示例')=>{
   if(typeof(content)==='string'){
     content = document.querySelector(content)
   }
@@ -26,41 +26,59 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
           .endAngle(sr+(index+1)*st)
       )
       .attr('fill',color)
+  }
 
-    var d = 3
-    for(var i=0;i<d+1;i++){
-      var corner = sr+st/d*i+index*st-st
-      svg.append('rect')
-        .attr('width',10)
-        .attr('height',3)
-        .attr('fill',color)
-        .attr('x',(r-14)*cos(corner)-5)
-        .attr('y',(r-14)*sin(corner)-3)
-        .style('transform',`rotate(${corner/pi*180}deg)`)
-        .style('transform-origin','50% 50%')
-
-      svg.append('text')
-        .attr('fill',color)
-        .attr('font-size','14')
-        .attr('x',(r-18)*cos(corner)-5)
-        .attr('y',(r-18)*sin(corner)-5)
-        .text(()=>{
-          return index*3+i
-        })
-
+  var d = 10
+  var selectColor = (i)=>{
+    if(i>6){
+      return 'red'
     }
-    for(var j=0;j<d*d+1;j++){
-      var corner = sr+st/d/d*j+index*st-st
+    if(i>3){
+      return 'green'
+    }
+    return 'grey'
+  }
+  for(var i=0;i<d+1;i++){
+    var corner = sr+st*3/d*i-st
+    var smn = 5
+    for(var j=0;j<smn;j++){
+      if(i===d){
+        break;
+      }
+      var sc = corner + st*3/10/smn*j
       svg.append('rect')
         .attr('width',5)
         .attr('height',1.5)
-        .attr('fill',color)
-        .attr('x',(r-12)*cos(corner)-2.5)
-        .attr('y',(r-12)*sin(corner)-1)
-        .style('transform',`rotate(${corner/pi*180}deg)`)
+        .attr('fill',selectColor(i))
+        .attr('x',(r-13)*cos(sc)-2.5)
+        .attr('y',(r-13)*sin(sc)-1)
+        .style('transform',`rotate(${sc/pi*180}deg)`)
         .style('transform-origin','50% 50%')
     }
+
+    svg.append('rect')
+      .attr('width',10)
+      .attr('height',3)
+      .attr('fill',selectColor(i))
+      .attr('x',(r-14)*cos(corner)-5)
+      .attr('y',(r-14)*sin(corner)-3)
+      .style('transform',`rotate(${corner/pi*180}deg)`)
+      .style('transform-origin','50% 50%')
+
+    // var text = maxNum/d*i+unit
+    // var fontSize = 14
+    // svg.append('text')
+    //   .attr('fill','#000')
+    //   .attr('font-size',fontSize)
+    //   .attr('x',(r-25)*cos(corner)+10)
+    //   .attr('y',(r-25)*sin(corner)+15)
+    //   .attr('dx',-text.length/2*fontSize)
+    //   .attr('dy',-fontSize/2)
+    //   .text(text)
+
+
   }
+
   createRadian(0,'grey')
   createRadian(1,'green')
   createRadian(2,'red')
