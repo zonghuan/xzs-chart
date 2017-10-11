@@ -34,8 +34,8 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
         .attr('width',10)
         .attr('height',3)
         .attr('fill',color)
-        .attr('x',(r-15)*cos(corner))
-        .attr('y',(r-15)*sin(corner))
+        .attr('x',(r-14)*cos(corner)-5)
+        .attr('y',(r-14)*sin(corner)-3)
         .style('transform',`rotate(${corner/pi*180-180}deg)`)
         .style('transform-origin','50% 50%')
     }
