@@ -39,6 +39,17 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
         .style('transform',`rotate(${corner/pi*180-180}deg)`)
         .style('transform-origin','50% 50%')
     }
+    for(var j=0;j<d*d+1;j++){
+      var corner = sr+st/d/d*j+index*st-st
+      svg.append('rect')
+        .attr('width',5)
+        .attr('height',1.5)
+        .attr('fill',color)
+        .attr('x',(r-12)*cos(corner)-2.5)
+        .attr('y',(r-12)*sin(corner)-1)
+        .style('transform',`rotate(${corner/pi*180-180}deg)`)
+        .style('transform-origin','50% 50%')
+    }
   }
   createRadian(0,'grey')
   createRadian(1,'green')
