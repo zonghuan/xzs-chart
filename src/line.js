@@ -73,6 +73,7 @@ export default (dom,width=400,height=400,duration=1000)=>{
     path.attr('d',line(dataLink))
       .attr('transform',`translate(0,${padding})`)
       .transition()
+      .ease(d3.easeLinear)
       .duration(duration-50)
       .attr('transform',`translate(${offsetx},${padding})`)
       .on('end',()=>{
@@ -82,5 +83,6 @@ export default (dom,width=400,height=400,duration=1000)=>{
         dataLink.shift()
         d3.select(this).datum(dataLink).attr('d',line).attr('transform',`translate(0,${padding})`)
       })
+
   }
 }
