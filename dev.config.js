@@ -3,7 +3,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 var entry = {
   "circle":"./example/circle.js",
-  "line":"./example/line.js"
+  "line":"./example/line.js",
+  'dashBoard':'./example/dashBoard.js'
 }
 var plugins = []
 
