@@ -121,7 +121,6 @@ export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表�
         d.text(parseInt(cur+(num-cur)*t)+unit)
       }
     })
-      //.style('transform',`rotate(300deg) scale(1,1) skewX(0deg)`)
   }
 
 }

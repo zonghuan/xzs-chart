@@ -6,6 +6,9 @@
   "scripts": {
     "server": "node_modules/.bin/webpack --config ./dev.config.js  --watch"
   },
+  "dependencies": {
+    "d3": "^4.10.2"
+  },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-helper-get-function-arity": "^6.24.1",
