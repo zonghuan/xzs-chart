@@ -84,6 +84,10 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
   createRadian(2,'red')
 
   //添加指针
+  var point = svg.append('g')
+  point.append('polygon')
+    .attr('points','0,-50 20,0 0,10 -20,0')
+    .attr('stroke','#000')
 
   return ()=>{
 
