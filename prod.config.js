@@ -5,11 +5,12 @@ module.exports = {
     'chart':'./src/index.js'
   },
   externals:{
-    'd3':"require('d3')"
+    'd3':'d3'
   },
   output:{
     filename:'chart.js',
-    path:__dirname
+    path:__dirname,
+    libraryTarget:'umd'
   },
   module: {
     rules: [

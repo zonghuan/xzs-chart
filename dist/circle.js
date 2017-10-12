@@ -9769,132 +9769,8 @@ function transform(node) {
 
 
 /***/ }),
-/* 172 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _circle = __webpack_require__(173);
-
-var _circle2 = _interopRequireDefault(_circle);
-
-var _line = __webpack_require__(464);
-
-var _line2 = _interopRequireDefault(_line);
-
-var _dashBoard = __webpack_require__(465);
-
-var _dashBoard2 = _interopRequireDefault(_dashBoard);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.default = {
-  createCircle: _circle2.default,
-  createLine: _line2.default,
-  createDashBoard: _dashBoard2.default
-};
-
-/***/ }),
-/* 173 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _d = __webpack_require__(48);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.default = function (dom) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
-
-  if (typeof dom === 'string') {
-    dom = document.querySelector(dom);
-  }
-  var wrap = document.createElement('div');
-  dom.appendChild(wrap);
-  var svg = d3.select(wrap).style('position', 'relative').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-  var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
-
-  return function (list) {
-
-    // list => [{title:"标题",data:123}]
-    var RADIUS = width * 3 / 8;
-    var sum = list.reduce(function ($1, $2) {
-      return $1 + $2.data;
-    }, 0);
-    var curRect = function curRect(index) {
-      return list.filter(function (data, dex) {
-        return dex <= index;
-      }).reduce(function ($1, $2) {
-        return $1 + $2.data;
-      }, 0) / sum;
-    };
-    var arc = function arc(index, radius) {
-      var startAngle = (index === 0 ? 0 : curRect(index - 1)) * Math.PI * 2;
-      var endAngle = curRect(index) * Math.PI * 2;
-      return d3.arc().padAngle(Math.PI / 180).innerRadius(0).outerRadius(radius || RADIUS).cornerRadius(5).startAngle(startAngle).endAngle(endAngle)();
-    };
-    var ease = d3.easeBackOut;
-    var arcText = function arcText(index, radius) {
-      var r = radius || RADIUS + 25;
-      var startAngle = (index === 0 ? 0 : curRect(index - 1)) * Math.PI * 2;
-      var endAngle = curRect(index) * Math.PI * 2;
-      var centerAngle = (endAngle + startAngle) / 2;
-      var x = r * Math.sin(centerAngle);
-      var y = -r * Math.cos(centerAngle);
-      return [x, y, centerAngle];
-    };
-
-    // 图案变化
-    var path = svg.selectAll('path').data(list, function (data, index) {
-      return index;
-    });
-    path.enter().append('path').style('fill', function (data, index) {
-      return colors[index % colors.length];
-    }).attr('d', function (data, index) {
-      return arc(index);
-    }).attr('transform', 'scale(.01,.01)').transition().duration(500).ease(ease).delay(function (data, index) {
-      return index * 100;
-    }).attr('transform', 'scale(1,1)');
-    path.transition().duration(1000).attr('d', function (data, index) {
-      return arc(index);
-    }).attr('transform', 'scale(1,1)');
-    path.exit().transition().style('transform', 'scale(0,0)').remove();
-
-    // 文字变化
-    var text = svg.selectAll('text').data(list, function (data, index) {
-      return index;
-    });
-    text.enter().append('text').each(function (d, index) {
-      var pix = arcText(index);
-      var p = d3.select(this).attr('x', pix[0]).attr('y', pix[1]).attr('transform', 'rotate(' + pix[2] * 180 / Math.PI + ',' + pix[0] + ',' + pix[1] + ')');
-      p.append('tspan').html(d.title).attr('dx', 0);
-      p.append('tspan').html(d.data).attr('dx', -12 * d.title.length).attr('dy', 15);
-    });
-
-    text.each(function (d, index) {
-      var pix = arcText(index);
-      d3.select(this).transition().duration(1000).attr('x', pix[0]).attr('y', pix[1]).attr('transform', 'rotate(' + pix[2] * 180 / Math.PI + ',' + pix[0] + ',' + pix[1] + ')');
-    });
-
-    text.exit().remove();
-  };
-};
-
-/***/ }),
+/* 172 */,
+/* 173 */,
 /* 174 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -22955,207 +22831,21 @@ function nopropagation() {
 
 
 /***/ }),
-/* 464 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _d = __webpack_require__(48);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.default = function (dom) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
-  var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
-
-
-  if (typeof dom === 'string') {
-    dom = document.querySelector(dom);
-  }
-  var dataLink = [];
-  var length = 6;
-  var padding = 30;
-  var svg = d3.select(dom).append('svg').attr('width', width).attr('height', height);
-
-  var initData = [];
-
-  // 定义裁剪区域
-  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('x', padding).attr('y', padding).attr('width', width - padding).attr('height', height - padding);
-
-  var createAxisY = function createAxisY(domain) {
-    return d3.axisLeft(d3.scaleLinear().domain([0, domain]).range([height - padding * 2, padding]));
-  };
-
-  var createAxisYg = function createAxisYg(axisY) {
-    return svg.append('g').attr('class', 'axis-y').attr('transform', 'translate(' + padding + ',' + padding + ')').call(axisY);
-  };
-
-  createAxisYg(createAxisY(Math.max.apply(Math, initData)));
-
-  var x = d3.scaleLinear().domain([0, length - 1]).range([padding, width]);
-
-  var path = svg.append('g').attr('clip-path', "url(#clip)").append('path').attr('class', 'line-path').style('fill', 'transparent').style('stroke', '#000').attr('transform', 'translate(0,' + padding + ')');
-
-  return function (obj) {
-
-    dataLink.push(obj);
-
-    // 左侧
-    var domain = Math.max.apply(Math, dataLink.map(function (d) {
-      return d.data;
-    }));
-    var y = d3.scaleLinear().domain([0, domain]).range([height - padding * 2, padding]);
-
-    svg.select('.axis-y').remove();
-    createAxisYg(createAxisY(domain));
-
-    var line = d3.line()
-    //.curve(d3.curveCardinal.tension(0.5))
-    .x(function (d, index) {
-      return x(index);
-    }).y(function (d) {
-      return y(d.data);
-    });
-
-    var offsetx = dataLink.length < length + 1 ? 0 : x(0) - x(1);
-    path.attr('d', line(dataLink)).attr('transform', 'translate(0,' + padding + ')').transition().ease(d3.easeLinear).duration(duration - 50).attr('transform', 'translate(' + offsetx + ',' + padding + ')').on('end', function () {
-      if (offsetx === 0) {
-        return;
-      }
-      dataLink.shift();
-      d3.select(undefined).datum(dataLink).attr('d', line).attr('transform', 'translate(0,' + padding + ')');
-    });
-  };
-};
-
-/***/ }),
-/* 465 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _d = __webpack_require__(48);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.default = function (content) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
-  var maxNum = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 100;
-  var unit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '%';
-  var title = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '仪表盘示例';
-  var during = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 1000;
-
-  if (typeof content === 'string') {
-    content = document.querySelector(content);
-  }
-
-  var svg = d3.select(content).append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-
-  var pi = Math.PI,
-      sin = Math.sin,
-      cos = Math.cos;
-  var sr = -pi * 3 / 4;
-  var st = pi / 2;
-  var mn = 10;
-  var r = (width > height ? height : width) / 2;
-
-  var createRadian = function createRadian(index, color) {
-    svg.append('path').attr('d', d3.arc().innerRadius(r - 10).outerRadius(r).startAngle(sr + index * st).endAngle(sr + (index + 1) * st)).attr('fill', color);
-  };
-
-  var d = 10;
-  var selectColor = function selectColor(i) {
-    if (i > 6) {
-      return 'red';
-    }
-    if (i > 3) {
-      return 'green';
-    }
-    return 'grey';
-  };
-  // 添加刻度
-  for (var i = 0; i < d + 1; i++) {
-    var corner = sr + st * 3 / d * i - st;
-    var smn = 5;
-    for (var j = 0; j < smn; j++) {
-      if (i === d) {
-        break;
-      }
-      var sc = corner + st * 3 / 10 / smn * j;
-      svg.append('rect').attr('width', 5).attr('height', 1.5).attr('fill', selectColor(i)).attr('x', (r - 13) * cos(sc) - 2.5).attr('y', (r - 13) * sin(sc) - 1).style('transform', 'rotate(' + sc / pi * 180 + 'deg)').style('transform-origin', '50% 50%');
-    }
-
-    svg.append('rect').attr('width', 10).attr('height', 3).attr('fill', selectColor(i)).attr('x', (r - 14) * cos(corner) - 5).attr('y', (r - 14) * sin(corner) - 3).style('transform', 'rotate(' + corner / pi * 180 + 'deg)').style('transform-origin', '50% 50%');
-  }
-
-  // 添加圆弧
-  createRadian(0, 'grey');
-  createRadian(1, 'green');
-  createRadian(2, 'red');
-
-  // 添加文字
-  var fs = 50;
-  var numText = svg.append('text').text('0' + unit).attr('y', r / 2).attr('dx', -(unit.length + 1) / 2 * fs).style('font-size', fs);
-
-  // 添加标题
-  svg.append('text').text(title).attr('y', -r / 2).attr('dx', -title.length / 2 * (fs - 20)).style('font-size', fs - 20).style('color', 'green');
-
-  //添加指针
-  var point = svg.append('g');
-  point.append('polygon').attr('points', '0,-10 15,0 0,150 -15,0').attr('fill', 'green').attr('stroke', '#000');
-  point.append('circle').attr('x', 0).attr('y', 0).attr('r', 5).attr('fill', '#fff').attr('stroke', '#000');
-
-  point.style('transform', 'rotate(0deg)').style('transition', 'all ' + during / 1000 + 's ease-in-out 0s');
-
-  return function (num) {
-    if (num < 0) {
-      num = 0;
-    }
-    if (num > 100) {
-      num = 100;
-    }
-    point.style('transform', 'rotate(' + (45 + 270 * num / maxNum) + 'deg)');
-
-    numText.transition().duration(during).tween('transform', function (d, i) {
-      var d = d3.select(this);
-      var cur = parseInt(d.text().replace(/\D/g, ''));
-      return function (t) {
-        d.text(parseInt(cur + (num - cur) * t) + unit);
-      };
-    });
-  };
-};
-
-/***/ }),
+/* 464 */,
+/* 465 */,
 /* 466 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _src = __webpack_require__(172);
+var _chart = __webpack_require__(469);
 
-var _src2 = _interopRequireDefault(_src);
+var _chart2 = _interopRequireDefault(_chart);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var update = _src2.default.createCircle('#content', 500, 500);
+var update = _chart2.default.createCircle('#content', 500, 500);
 
 update([{ title: "数据1数据1", data: 100 }, { title: "数据2", data: 200 }, { title: "数据3", data: 300 }, { title: "数据4", data: 400 }, { title: "数据5", data: 250 }, { title: "数据6", data: 300 }]);
 
@@ -23166,6 +22856,195 @@ window.setTimeout(function () {
 window.setTimeout(function () {
   update([{ title: "数据1", data: 150 }, { title: "数据2", data: 660 }, { title: "数据3", data: 300 }, { title: "数据4", data: 460 }, { title: "数据5", data: 150 }]);
 }, 4000);
+
+/***/ }),
+/* 467 */,
+/* 468 */,
+/* 469 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(module) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+!function (t, e) {
+  if ("object" == ( false ? "undefined" : _typeof(exports)) && "object" == ( false ? "undefined" : _typeof(module))) module.exports = e(__webpack_require__(48));else if (true) !(__WEBPACK_AMD_DEFINE_ARRAY__ = [__webpack_require__(48)], __WEBPACK_AMD_DEFINE_FACTORY__ = (e),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));else {
+    var r = e("object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? require("d3") : t.d3);for (var a in r) {
+      ("object" == (typeof exports === "undefined" ? "undefined" : _typeof(exports)) ? exports : t)[a] = r[a];
+    }
+  }
+}(undefined, function (t) {
+  return function (t) {
+    function e(a) {
+      if (r[a]) return r[a].exports;var n = r[a] = { i: a, l: !1, exports: {} };return t[a].call(n.exports, n, n.exports, e), n.l = !0, n.exports;
+    }var r = {};return e.m = t, e.c = r, e.d = function (t, r, a) {
+      e.o(t, r) || Object.defineProperty(t, r, { configurable: !1, enumerable: !0, get: a });
+    }, e.n = function (t) {
+      var r = t && t.__esModule ? function () {
+        return t.default;
+      } : function () {
+        return t;
+      };return e.d(r, "a", r), r;
+    }, e.o = function (t, e) {
+      return Object.prototype.hasOwnProperty.call(t, e);
+    }, e.p = "", e(e.s = 1);
+  }([function (e, r) {
+    e.exports = t;
+  }, function (t, e, r) {
+    "use strict";
+    function a(t) {
+      return t && t.__esModule ? t : { default: t };
+    }Object.defineProperty(e, "__esModule", { value: !0 }), e.default = { createCircle: a(r(2)).default, createLine: a(r(3)).default, createDashBoard: a(r(4)).default };
+  }, function (t, e, r) {
+    "use strict";
+    Object.defineProperty(e, "__esModule", { value: !0 });var a = r(0),
+        n = function (t) {
+      if (t && t.__esModule) return t;var e = {};if (null != t) for (var r in t) {
+        Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r]);
+      }return e.default = t, e;
+    }(a);e.default = function (t) {
+      var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 400,
+          r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 400;"string" == typeof t && (t = document.querySelector(t));var a = document.createElement("div");t.appendChild(a);var o = n.select(a).style("position", "relative").append("svg").attr("width", e).attr("height", r).append("g").attr("transform", "translate(" + e / 2 + "," + r / 2 + ")"),
+          i = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];return function (t) {
+        var r = 3 * e / 8,
+            a = t.reduce(function (t, e) {
+          return t + e.data;
+        }, 0),
+            l = function l(e) {
+          return t.filter(function (t, r) {
+            return e >= r;
+          }).reduce(function (t, e) {
+            return t + e.data;
+          }, 0) / a;
+        },
+            s = function s(t, e) {
+          var a = (0 === t ? 0 : l(t - 1)) * Math.PI * 2,
+              o = l(t) * Math.PI * 2;return n.arc().padAngle(Math.PI / 180).innerRadius(0).outerRadius(e || r).cornerRadius(5).startAngle(a).endAngle(o)();
+        },
+            u = n.easeBackOut,
+            d = function d(t, e) {
+          var a = e || r + 25,
+              n = (0 === t ? 0 : l(t - 1)) * Math.PI * 2,
+              o = l(t) * Math.PI * 2,
+              i = (o + n) / 2;return [a * Math.sin(i), -a * Math.cos(i), i];
+        },
+            f = o.selectAll("path").data(t, function (t, e) {
+          return e;
+        });f.enter().append("path").style("fill", function (t, e) {
+          return i[e % 7];
+        }).attr("d", function (t, e) {
+          return s(e);
+        }).attr("transform", "scale(.01,.01)").transition().duration(500).ease(u).delay(function (t, e) {
+          return 100 * e;
+        }).attr("transform", "scale(1,1)"), f.transition().duration(1e3).attr("d", function (t, e) {
+          return s(e);
+        }).attr("transform", "scale(1,1)"), f.exit().transition().style("transform", "scale(0,0)").remove();var c = o.selectAll("text").data(t, function (t, e) {
+          return e;
+        });c.enter().append("text").each(function (t, e) {
+          var r = d(e),
+              a = n.select(this).attr("x", r[0]).attr("y", r[1]).attr("transform", "rotate(" + 180 * r[2] / Math.PI + "," + r[0] + "," + r[1] + ")");a.append("tspan").html(t.title).attr("dx", 0), a.append("tspan").html(t.data).attr("dx", -12 * t.title.length).attr("dy", 15);
+        }), c.each(function (t, e) {
+          var r = d(e);n.select(this).transition().duration(1e3).attr("x", r[0]).attr("y", r[1]).attr("transform", "rotate(" + 180 * r[2] / Math.PI + "," + r[0] + "," + r[1] + ")");
+        }), c.exit().remove();
+      };
+    };
+  }, function (t, e, r) {
+    "use strict";
+    Object.defineProperty(e, "__esModule", { value: !0 });var a = r(0),
+        n = function (t) {
+      if (t && t.__esModule) return t;var e = {};if (null != t) for (var r in t) {
+        Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r]);
+      }return e.default = t, e;
+    }(a);e.default = function (t) {
+      var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 400,
+          r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 400,
+          a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : 1e3;"string" == typeof t && (t = document.querySelector(t));var o = [],
+          i = n.select(t).append("svg").attr("width", e).attr("height", r),
+          l = [];i.append("defs").append("clipPath").attr("id", "clip").append("rect").attr("x", 30).attr("y", 30).attr("width", e - 30).attr("height", r - 30);var s = function s(t) {
+        return n.axisLeft(n.scaleLinear().domain([0, t]).range([r - 60, 30]));
+      },
+          u = function u(t) {
+        return i.append("g").attr("class", "axis-y").attr("transform", "translate(30,30)").call(t);
+      };u(s(Math.max.apply(Math, l)));var d = n.scaleLinear().domain([0, 5]).range([30, e]),
+          f = i.append("g").attr("clip-path", "url(#clip)").append("path").attr("class", "line-path").style("fill", "transparent").style("stroke", "#000").attr("transform", "translate(0,30)");return function (t) {
+        o.push(t);var e = Math.max.apply(Math, o.map(function (t) {
+          return t.data;
+        })),
+            l = n.scaleLinear().domain([0, e]).range([r - 60, 30]);i.select(".axis-y").remove(), u(s(e));var c = n.line().x(function (t, e) {
+          return d(e);
+        }).y(function (t) {
+          return l(t.data);
+        }),
+            p = 7 > o.length ? 0 : d(0) - d(1);f.attr("d", c(o)).attr("transform", "translate(0,30)").transition().ease(n.easeLinear).duration(a - 50).attr("transform", "translate(" + p + ",30)").on("end", function () {
+          0 !== p && (o.shift(), n.select(void 0).datum(o).attr("d", c).attr("transform", "translate(0,30)"));
+        });
+      };
+    };
+  }, function (t, e, r) {
+    "use strict";
+    Object.defineProperty(e, "__esModule", { value: !0 });var a = r(0),
+        n = function (t) {
+      if (t && t.__esModule) return t;var e = {};if (null != t) for (var r in t) {
+        Object.prototype.hasOwnProperty.call(t, r) && (e[r] = t[r]);
+      }return e.default = t, e;
+    }(a);e.default = function (t) {
+      var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 400,
+          r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 400,
+          a = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : 100,
+          o = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : "%",
+          i = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "仪表盘示例",
+          l = arguments.length > 6 && void 0 !== arguments[6] ? arguments[6] : 1e3;"string" == typeof t && (t = document.querySelector(t));for (var s = n.select(t).append("svg").attr("width", e).attr("height", r).append("g").attr("transform", "translate(" + e / 2 + "," + r / 2 + ")"), u = Math.PI, d = Math.sin, f = Math.cos, c = 3 * -u / 4, p = u / 2, h = (e > r ? r : e) / 2, v = function v(t, e) {
+        s.append("path").attr("d", n.arc().innerRadius(h - 10).outerRadius(h).startAngle(c + t * p).endAngle(c + (t + 1) * p)).attr("fill", e);
+      }, y = function y(t) {
+        return t > 6 ? "red" : t > 3 ? "green" : "grey";
+      }, g = 0; 11 > g; g++) {
+        for (var m = c + 3 * p / 10 * g - p, x = 0; 5 > x && 10 !== g; x++) {
+          var M = m + 3 * p / 10 / 5 * x;s.append("rect").attr("width", 5).attr("height", 1.5).attr("fill", y(g)).attr("x", (h - 13) * f(M) - 2.5).attr("y", (h - 13) * d(M) - 1).style("transform", "rotate(" + M / u * 180 + "deg)").style("transform-origin", "50% 50%");
+        }s.append("rect").attr("width", 10).attr("height", 3).attr("fill", y(g)).attr("x", (h - 14) * f(m) - 5).attr("y", (h - 14) * d(m) - 3).style("transform", "rotate(" + m / u * 180 + "deg)").style("transform-origin", "50% 50%");
+      }v(0, "grey"), v(1, "green"), v(2, "red");var b = s.append("text").text("0" + o).attr("y", h / 2).attr("dx", -(o.length + 1) / 2 * 50).style("font-size", 50);s.append("text").text(i).attr("y", -h / 2).attr("dx", -i.length / 2 * 30).style("font-size", 30).style("color", "green");var P = s.append("g");return P.append("polygon").attr("points", "0,-10 15,0 0,150 -15,0").attr("fill", "green").attr("stroke", "#000"), P.append("circle").attr("x", 0).attr("y", 0).attr("r", 5).attr("fill", "#fff").attr("stroke", "#000"), P.style("transform", "rotate(0deg)").style("transition", "all " + l / 1e3 + "s ease-in-out 0s"), function (t) {
+        0 > t && (t = 0), t > 100 && (t = 100), P.style("transform", "rotate(" + (45 + 270 * t / a) + "deg)"), b.transition().duration(l).tween("transform", function (e, r) {
+          var e = n.select(this),
+              a = parseInt(e.text().replace(/\D/g, ""));return function (r) {
+            e.text(parseInt(a + (t - a) * r) + o);
+          };
+        });
+      };
+    };
+  }]);
+});
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(470)(module)))
+
+/***/ }),
+/* 470 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
 
 /***/ })
 /******/ ]);

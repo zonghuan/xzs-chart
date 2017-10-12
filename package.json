@@ -1,5 +1,5 @@
 {
-  "version": "0.0.4",
+  "version": "0.0.5",
   "name": "xzs-chart",
   "main": "chart.js",
   "description": "动态图表组件，基于d3",

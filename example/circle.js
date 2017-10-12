@@ -1,4 +1,4 @@
-import chart from '../src'
+import chart from '../chart.js'
 
 var update = chart.createCircle('#content',500,500)
 
