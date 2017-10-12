@@ -9810,15 +9810,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _d = __webpack_require__(48);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.default = function (dom) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
+exports.default = function (d3, dom) {
+  var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
+  var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 400;
 
   if (typeof dom === 'string') {
     dom = document.querySelector(dom);
@@ -22965,16 +22959,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _d = __webpack_require__(48);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.default = function (dom) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
-  var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
+exports.default = function (d3, dom) {
+  var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
+  var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 400;
+  var duration = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 1000;
 
 
   if (typeof dom === 'string') {
@@ -23047,19 +23035,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _d = __webpack_require__(48);
-
-var d3 = _interopRequireWildcard(_d);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
-
-exports.default = function (content) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
-  var maxNum = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 100;
-  var unit = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : '%';
-  var title = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '仪表盘示例';
-  var during = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 1000;
+exports.default = function (d3, content) {
+  var width = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
+  var height = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 400;
+  var maxNum = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 100;
+  var unit = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : '%';
+  var title = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : '仪表盘示例';
+  var during = arguments.length > 7 && arguments[7] !== undefined ? arguments[7] : 1000;
 
   if (typeof content === 'string') {
     content = document.querySelector(content);
@@ -23158,7 +23140,7 @@ var _src2 = _interopRequireDefault(_src);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var maxNum = 100;
-var update = _src2.default.createDashBoard('#content', 400, 400, maxNum);
+var update = _src2.default.createDashBoard(__webpack_require__(48), '#content', 400, 400, maxNum);
 
 window.setInterval(function () {
   update(parseInt(Math.random() * maxNum));
