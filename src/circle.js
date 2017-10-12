@@ -1,4 +1,4 @@
-var d3 = require('d3')
+import * as d3 from "d3"
 
 export default (dom,width=400,height=400) => {
   if(typeof(dom)==='string'){

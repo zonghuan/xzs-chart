@@ -1,4 +1,4 @@
-var d3 =  require('d3')
+import * as d3 from "d3"
 
 export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表盘示例',during=1000)=>{
   if(typeof(content)==='string'){
