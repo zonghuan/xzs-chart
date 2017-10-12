@@ -1,6 +1,6 @@
 var d3 =  require('d3')
 
-export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘示例',during=1000)=>{
+export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表盘示例',during=1000)=>{
   if(typeof(content)==='string'){
     content = document.querySelector(content)
   }
@@ -66,16 +66,6 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
       .style('transform',`rotate(${corner/pi*180}deg)`)
       .style('transform-origin','50% 50%')
 
-    // var text = maxNum/d*i+unit
-    // var fontSize = 14
-    // svg.append('text')
-    //   .attr('fill','#000')
-    //   .attr('font-size',fontSize)
-    //   .attr('x',(r-25)*cos(corner)+10)
-    //   .attr('y',(r-25)*sin(corner)+15)
-    //   .attr('dx',-text.length/2*fontSize)
-    //   .attr('dy',-fontSize/2)
-    //   .text(text)
   }
 
   // 添加圆弧
@@ -83,10 +73,26 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
   createRadian(1,'green')
   createRadian(2,'red')
 
+  // 添加文字
+  var fs = 50
+  var numText = svg.append('text')
+    .text(`0${unit}`)
+    .attr('y',r/2)
+    .attr('dx',-(unit.length+1)/2*fs)
+    .style('font-size',fs)
+
+  // 添加标题
+  svg.append('text')
+    .text(title)
+    .attr('y',-r/2)
+    .attr('dx',-title.length/2*(fs-20))
+    .style('font-size',fs-20)
+    .style('color','green')
+
   //添加指针
   var point = svg.append('g')
   point.append('polygon')
-    .attr('points','0,-150 15,0 0,10 -15,0')
+    .attr('points','0,-10 15,0 0,150 -15,0')
     .attr('fill','green')
     .attr('stroke','#000')
   point.append('circle')
@@ -97,6 +103,7 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
     .attr('stroke','#000')
 
   point.style('transform','rotate(0deg)')
+    .style('transition',`all ${during/1000}s ease-in-out 0s`)
 
   return (num)=>{
     if(num<0){
@@ -105,10 +112,16 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
     if(num>100){
       num = 100
     }
+    point.style('transform',`rotate(${45+270*num/maxNum}deg)`)
 
-    point.interrupt()
-      .transition()
-      .style('transform',`rotate(${-150+270*num/maxNum}deg)`)
+    numText.transition().duration(during).tween('transform',function(d,i){
+      var d = d3.select(this)
+      var cur = parseInt(d.text().replace(/\D/g,''))
+      return t=>{
+        d.text(parseInt(cur+(num-cur)*t)+unit)
+      }
+    })
+      //.style('transform',`rotate(300deg) scale(1,1) skewX(0deg)`)
   }
 
 }

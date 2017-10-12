@@ -5,4 +5,4 @@ var update = chart.createDashBoard('#content',400,400,maxNum)
 
 window.setInterval(()=>{
   update(parseInt(Math.random()*maxNum))
-},1000)
+},2000)
