@@ -1,5 +1,6 @@
+var d3 = require('d3')
 
-export default (d3,content,width=400,height=400,maxNum=100,unit='%',title='仪表盘示例',during=1000)=>{
+export default (content,width=400,height=400,maxNum=100,unit='%',title='仪表盘示例',during=1000)=>{
   if(typeof(content)==='string'){
     content = document.querySelector(content)
   }
@@ -19,7 +20,7 @@ export default (d3,content,width=400,height=400,maxNum=100,unit='%',title='仪�
 
   var createRadian = (index,color) => {
     svg.append('path')
-      .attr('d',d3.arc().innerRadius(r-10)
+      .attr('d',d3.svg.arc().innerRadius(r-10)
           .outerRadius(r)
           .startAngle(sr+index*st)
           .endAngle(sr+(index+1)*st)

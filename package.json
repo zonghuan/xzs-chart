@@ -1,5 +1,5 @@
 {
-  "version": "0.0.8",
+  "version": "0.0.9",
   "name": "xzs-chart",
   "main": "chart.js",
   "description": "动态图表组件，基于d3",
@@ -8,7 +8,7 @@
     "build":"node_modules/.bin/webpack --config ./prod.config.js"
   },
   "dependencies": {
-    "d3": "^4.10.2"
+    "d3": "^3.5.17"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

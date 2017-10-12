@@ -1,7 +1,6 @@
 import chart from '../src'
-var d3 = require('d3')
 
-var update = chart.createCircle(d3,'#content',500,500)
+var update = chart.createCircle('#content',500,500)
 
 update([
   {title:"数据1数据1",data:100},
@@ -14,7 +13,7 @@ update([
 
 window.setTimeout(()=>{
   update([
-    {title:"数据1",data:150},
+    {title:"数据1",data:150}, 
     {title:"数据2",data:660},
     {title:"数据3",data:300},
     {title:"数据4",data:460},

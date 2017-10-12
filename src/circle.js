@@ -1,4 +1,5 @@
-export default (d3,dom,width=400,height=400) => {
+var d3 = require('d3')
+export default (dom,width=400,height=400) => {
   if(typeof(dom)==='string'){
     dom = document.querySelector(dom)
   }
@@ -20,11 +21,11 @@ export default (d3,dom,width=400,height=400) => {
     var arc = (index,radius) => {
       var startAngle = (index===0?0:curRect(index-1)) * Math.PI * 2
       var endAngle = curRect(index) * Math.PI * 2
-      return d3.arc().padAngle(Math.PI/180)
+      return d3.svg.arc().padAngle(Math.PI/180)
         .innerRadius(0).outerRadius(radius||RADIUS)
         .cornerRadius(5).startAngle(startAngle).endAngle(endAngle)()
     }
-    var ease = d3.easeBackOut
+    var ease = d3.ease('sin')
     var arcText = (index,radius) => {
       var r = radius||RADIUS+25
       var startAngle = (index===0?0:curRect(index-1)) * Math.PI * 2
@@ -41,9 +42,12 @@ export default (d3,dom,width=400,height=400) => {
         .style('fill',(data,index)=>colors[index%colors.length])
         .attr('d',(data,index)=>arc(index))
         .attr('transform','scale(.01,.01)')
-        .transition().duration(500).ease(ease).delay((data,index)=>index*100).attr('transform','scale(1,1)')
+        .transition().duration(500).delay((data,index)=>index*100).ease(ease).attr('transform','scale(1,1)')
     path.transition().duration(1000).attr('d',(data,index)=>arc(index)).attr('transform','scale(1,1)')
-    path.exit().transition().style('transform','scale(0,0)').remove()
+
+    path.exit().transition().attr('transform','scale(0,0)').each('end',function(){
+      d3.select(this).remove()
+    })
 
     // 文字变化
     var text = svg.selectAll('text').data(list,(data,index)=>index)

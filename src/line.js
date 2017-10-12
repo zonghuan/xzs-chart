@@ -1,5 +1,6 @@
+var d3 = require('d3')
 
-export default (d3,dom,width=400,height=400,duration=1000)=>{
+export default (dom,width=400,height=400,duration=1000)=>{
 
   if(typeof(dom)==='string'){
     dom = document.querySelector(dom)
