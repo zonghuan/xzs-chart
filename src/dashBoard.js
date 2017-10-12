@@ -1,6 +1,6 @@
 var d3 =  require('d3')
 
-export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘示例')=>{
+export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘示例',during=1000)=>{
   if(typeof(content)==='string'){
     content = document.querySelector(content)
   }
@@ -86,11 +86,29 @@ export default (content,width=400,height=400,maxNum=100,unit='',title='仪表盘
   //添加指针
   var point = svg.append('g')
   point.append('polygon')
-    .attr('points','0,-50 20,0 0,10 -20,0')
+    .attr('points','0,-150 15,0 0,10 -15,0')
+    .attr('fill','green')
+    .attr('stroke','#000')
+  point.append('circle')
+    .attr('x',0)
+    .attr('y',0)
+    .attr('r',5)
+    .attr('fill','#fff')
     .attr('stroke','#000')
 
-  return ()=>{
+  point.style('transform','rotate(0deg)')
 
+  return (num)=>{
+    if(num<0){
+      num = 0
+    }
+    if(num>100){
+      num = 100
+    }
+
+    point.interrupt()
+      .transition()
+      .style('transform',`rotate(${-150+270*num/maxNum}deg)`)
   }
 
 }
