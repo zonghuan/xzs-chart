@@ -2,6 +2,15 @@ import chart from '../src'
 
 var update = chart.createColumnar('#content',800,500)
 
+// update([
+//   {title:"数据11",data:1500},
+//   {title:"数据21",data:2200},
+//   {title:"数据6",data:1900},
+//   {title:"数据8",data:600},
+//   {title:"数据5",data:250},
+//   {title:"数据6",data:300}
+// ])
+
 window.setTimeout(()=>{
 
   update([

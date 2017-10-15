@@ -1,6 +1,6 @@
 var d3 = require('d3')
 
-export default (content,width=800,height=500)=>{
+export default (content,width=800,height=500,duration=1000)=>{
   if(typeof(content)==='string'){
     content = document.querySelector(content)
   }
@@ -44,14 +44,14 @@ export default (content,width=800,height=500)=>{
 
   return (arg)=>{
     y.domain([0,Math.max.apply(Math,arg.map(a=>a.data))])
-    svg.transition().duration(500).select('g.axis-y')
+    svg.transition().duration(duration).select('g.axis-y')
       .call(yAxis)
       .selectAll('text')
         .attr('fill','#000')
         .attr('stroke','transparent')
 
     x.domain(['0'].concat(arg.map(a=>a.title)).concat(['']))
-    svg.transition().duration(500).select('g.axis-x')
+    svg.transition().duration(duration).select('g.axis-x')
       .call(xAxis)
       .selectAll('text')
       .attr('fill','#000')
@@ -68,7 +68,7 @@ export default (content,width=800,height=500)=>{
         .attr('height',0)
         .attr('y',d=>(height-padding))
         .transition()
-        .duration(500)
+        .duration(duration)
         .attr('y',d=>(y(d.data)+padding))
         .attr('height',d=>(height-padding*2-y(d.data)))
 
@@ -85,7 +85,30 @@ export default (content,width=800,height=500)=>{
       })
 
     var texts = svg.selectAll('text.th').data(arg,d=>d.title)
+    var fontSize = 16
+    texts.enter().append('text')
+      .attr('class','th')
+      .style('font-size',fontSize)
+      .attr('x',d=>(x(d.title)+rectWidth/2))
+      .attr('y',d=>(height-padding))
+      .text(d=>d.data)
+      .transition()
+      .duration(duration/2)
+      .attr('y',d=>(y(d.data)+padding-fontSize/2))
 
+    texts.transition()
+      .duration(duration/2)
+      .attr('y',d=>(y(d.data)+padding-fontSize/2))
+      .attr('x',d=>(x(d.title)+rectWidth/2))
+      .tween('transform',function(data,i){
+        var d = d3.select(this)
+        var cur = parseInt(d.text().replace(/\D/g,''))
+        return t=>{
+          d.text(parseInt(cur+(data.data-cur)*t))
+        }
+      })
+
+    texts.exit().remove()
 
   }
 }
