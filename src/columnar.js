@@ -64,7 +64,7 @@ export default (content,width=800,height=500)=>{
         .attr('class','dh')
         .attr('width',rectWidth)
         .attr('x',d=>(x(d.title)+rectWidth/2))
-        .attr('fill','#000')
+        .attr('fill','blue')
         .attr('height',0)
         .attr('y',d=>(height-padding))
         .transition()
@@ -84,8 +84,8 @@ export default (content,width=800,height=500)=>{
         d3.select(this).remove()
       })
 
-    var texts = svg.selectAll('text.th').data(arg,d=>title)
-      
+    var texts = svg.selectAll('text.th').data(arg,d=>d.title)
+
 
   }
 }

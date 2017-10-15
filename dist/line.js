@@ -10016,7 +10016,7 @@ exports.default = function (content) {
 
         rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
             return x(d.title) + rectWidth / 2;
-        }).attr('fill', '#000').attr('height', 0).attr('y', function (d) {
+        }).attr('fill', 'blue').attr('height', 0).attr('y', function (d) {
             return height - padding;
         }).transition().duration(500).attr('y', function (d) {
             return y(d.data) + padding;
@@ -10039,7 +10039,7 @@ exports.default = function (content) {
         });
 
         var texts = svg.selectAll('text.th').data(arg, function (d) {
-            return title;
+            return d.title;
         });
     };
 };
