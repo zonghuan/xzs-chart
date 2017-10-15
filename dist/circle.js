@@ -9986,6 +9986,7 @@ exports.default = function (content) {
     var d = [];
     var padding = 50;
     var y = d3.scale.linear().range([height - 2 * padding, 0]).domain([0, Math.max.apply(Math, d)]);
+
     var yAxis = d3.svg.axis().scale(y).ticks(10).orient('left');
 
     var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
@@ -10004,8 +10005,41 @@ exports.default = function (content) {
 
         x.domain(['0'].concat(arg.map(function (a) {
             return a.title;
-        })));
-        svg.select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+        })).concat(['']));
+        svg.transition().duration(500).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+
+        var rectWidth = 50;
+        var rects = svg.selectAll('rect.dh').data(arg, function (d) {
+            return d.title;
+        });
+
+        rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
+            return x(d.title) + rectWidth / 2;
+        }).attr('fill', '#000').attr('height', 0).attr('y', function (d) {
+            return height - padding;
+        }).transition().duration(500).attr('y', function (d) {
+            return y(d.data) + padding;
+        }).attr('height', function (d) {
+            return height - padding * 2 - y(d.data);
+        });
+
+        rects.transition().attr('height', function (d) {
+            return height - padding * 2 - y(d.data);
+        }).attr('y', function (d) {
+            return y(d.data) + padding;
+        }).attr('x', function (d) {
+            return x(d.title) + rectWidth / 2;
+        });
+
+        rects.exit().transition().attr('y', function (d) {
+            return y(d.data) + padding;
+        }).attr('height', 0).each('end', function () {
+            d3.select(this).remove();
+        });
+
+        var texts = svg.selectAll('text.th').data(arg, function (d) {
+            return title;
+        });
     };
 };
 
