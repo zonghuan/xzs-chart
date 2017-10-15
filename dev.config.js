@@ -4,7 +4,8 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 var entry = {
   "circle":"./example/circle.js",
   "line":"./example/line.js",
-  'dashBoard':'./example/dashBoard.js'
+  'dashBoard':'./example/dashBoard.js',
+  'columnar':'./example/columnar.js'
 }
 var plugins = []
 
