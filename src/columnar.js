@@ -64,7 +64,7 @@ export default (content,width=800,height=500)=>{
         .attr('class','dh')
         .attr('width',rectWidth)
         .attr('x',d=>(x(d.title)+rectWidth/2))
-        .attr('fill','blue')
+        .attr('fill','#000')
         .attr('height',0)
         .attr('y',d=>(height-padding))
         .transition()
