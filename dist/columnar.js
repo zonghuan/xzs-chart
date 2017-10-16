@@ -10052,6 +10052,8 @@ var d = [{ title: "数据1", data: 100 }, { title: "数据2", data: 200 }, { tit
 var i = 6;
 var maxNum = 3000;
 
+update(d);
+
 window.setInterval(function () {
 
   d.shift();

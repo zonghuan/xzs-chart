@@ -13,6 +13,8 @@ var d = [
 var i = 6
 var maxNum = 3000
 
+update(d)
+
 window.setInterval(()=>{
 
   d.shift()
