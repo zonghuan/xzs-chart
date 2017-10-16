@@ -15,7 +15,9 @@ npm install xzs-chart
 
 ### 1、饼图
 
-#### chart.createCircle(dom,width,height)
+#### API
+
+##### chart.createCircle(dom,width,height)
 
 初始化饼图。
 * `dom`可以为`querySelector`，也可以是原生dom对象。
@@ -23,12 +25,11 @@ npm install xzs-chart
 * `height`为图表高度，默认`400`。
 
 
-#### update(data)
+##### update(data)
 
 更新数据。
-* `data`的形式为`[{title:'数据1',data:100}]`，`title`作为饼图的文本，并为数据的key，`data`是展示的数据
 
-#### [实际效果](https://zonghuan.github.io/xzs-chart/dist/circle.html)
+* `data` - 形式为`[{title:'数据1',data:100}]`，`title`作为饼图的文本，并为数据的key，`data`是展示的数据
 
 
 #### 代码示例
@@ -70,13 +71,16 @@ window.setTimeout(()=>{
   ])
 },4000)
 
-
-
 ````
+
+#### [实际效果](https://zonghuan.github.io/xzs-chart/dist/circle.html)
+
 
 ### 2、仪表盘
 
-#### chart.createDashBoard(content,width,height,maxNum,unit,title,during)
+#### API
+
+###### chart.createDashBoard(content,width,height,maxNum,unit,title,during)
 
 初始化仪表盘
 
@@ -88,12 +92,9 @@ window.setTimeout(()=>{
 * `during` : 切换动画的持续时间
 
 
-#### update(num)
+###### update(num)
 
-* num - 更新的数据
-
-
-#### [实际效果](https://zonghuan.github.io/xzs-chart/dist/dashBoard.html)
+* `num` - 更新的数据
 
 #### 代码示例
 
@@ -109,3 +110,56 @@ window.setInterval(()=>{
 
 
 ````
+
+#### [实际效果](https://zonghuan.github.io/xzs-chart/dist/dashBoard.html)
+
+
+### 3、柱状图
+
+#### API
+
+##### chart.createColumnar(content,width,height,duration)
+
+初始化柱状图
+
+* `content` - `dom`可以为`querySelector`，也可以是原生dom对象。
+* `width` : 图表宽度，默认400。
+* `height` : 图表长度，默认400。`maxNum` : 最大值，默认100。
+* `during` : 切换动画的持续时间
+
+###### update(arr)
+
+* `arr` - 形式为`[{title:'数据1',data:100}]`，`title`作为饼图的文本，并为数据的key，`arr`是展示的数据
+
+
+#### 代码示例
+
+````
+
+import chart from 'xzs-chart'
+
+var update = chart.createColumnar('#content',800,500)
+
+var d = [
+  {title:"数据1",data:100},
+  {title:"数据2",data:200},
+  {title:"数据3",data:300},
+  {title:"数据4",data:400},
+  {title:"数据5",data:250},
+  {title:"数据6",data:300}
+]
+var i = 6
+var maxNum = 3000
+
+window.setInterval(()=>{
+
+  d.shift()
+  d.push({title:`数据${i++}`,data:(maxNum*Math.random()).toFixed(2)})
+
+  update(d)
+
+},4000)
+
+````
+
+#### [实际效果](https://zonghuan.github.io/xzs-chart/dist/columnar.html)
