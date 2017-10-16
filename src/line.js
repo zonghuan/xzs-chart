@@ -24,24 +24,20 @@ export default (dom,width=400,height=400,duration=1000)=>{
       .attr('width',width-padding)
       .attr('height',height-padding)
 
-  var createAxisY = domain => (
-    d3.axisLeft(
-      d3.scaleLinear()
-        .domain([0,domain])
-        .range([height-padding*2,padding])
-    )
-  )
+  var  y = d3.scale.linear()
+      .domain([0,100])
+      .range([height-padding*2,padding])
 
-  var createAxisYg = axisY => (
-    svg.append('g')
-      .attr('class','axis-y')
-      .attr('transform',`translate(${padding},${padding})`)
-      .call(axisY)
-  )
+  var yAxis = d3.svg.axis().scale(y).orient('left')
 
-  createAxisYg(createAxisY(Math.max.apply(Math,initData)))
+  svg.append('g')
+    .attr('class','axis-y')
+    .attr('transform',`translate(${padding},${padding})`)
+    .attr('fill','transparent')
+    .attr('stroke','#000')
+    .call(yAxis)
 
-  var x = d3.scaleLinear()
+  var x = d3.scale.linear()
       .domain([0,length-1])
       .range([padding,width])
 
@@ -58,14 +54,15 @@ export default (dom,width=400,height=400,duration=1000)=>{
 
     // 左侧
     var domain = Math.max.apply(Math,dataLink.map(d=>d.data))
-    var y = d3.scaleLinear()
-      .domain([0,domain])
-      .range([height-padding*2,padding])
 
-    svg.select('.axis-y').remove()
-    createAxisYg(createAxisY(domain))
+    y.domain([0,domain])
+    svg.select('g.axis-y')
+      .call(yAxis)
+      .selectAll('text')
+        .attr('fill','#000')
+        .attr('stroke','transparent')
 
-    var line = d3.line()
+    var line = d3.svg.line()
         //.curve(d3.curveCardinal.tension(0.5))
         .x((d,index)=>x(index))
         .y(d=>y(d.data))
@@ -74,10 +71,10 @@ export default (dom,width=400,height=400,duration=1000)=>{
     path.attr('d',line(dataLink))
       .attr('transform',`translate(0,${padding})`)
       .transition()
-      .ease(d3.easeLinear)
+      .ease(d3.ease('linear'))
       .duration(duration-50)
       .attr('transform',`translate(${offsetx},${padding})`)
-      .on('end',()=>{
+      .each('end',()=>{
         if(offsetx===0){
           return
         }

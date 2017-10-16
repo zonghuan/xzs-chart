@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -9649,7 +9649,7 @@ var _dashBoard = __webpack_require__(4);
 
 var _dashBoard2 = _interopRequireDefault(_dashBoard);
 
-var _columnar = __webpack_require__(9);
+var _columnar = __webpack_require__(5);
 
 var _columnar2 = _interopRequireDefault(_columnar);
 
@@ -9786,17 +9786,13 @@ exports.default = function (dom) {
   // 定义裁剪区域
   svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('x', padding).attr('y', padding).attr('width', width - padding).attr('height', height - padding);
 
-  var createAxisY = function createAxisY(domain) {
-    return d3.axisLeft(d3.scaleLinear().domain([0, domain]).range([height - padding * 2, padding]));
-  };
+  var y = d3.scale.linear().domain([0, 100]).range([height - padding * 2, padding]);
 
-  var createAxisYg = function createAxisYg(axisY) {
-    return svg.append('g').attr('class', 'axis-y').attr('transform', 'translate(' + padding + ',' + padding + ')').call(axisY);
-  };
+  var yAxis = d3.svg.axis().scale(y).orient('left');
 
-  createAxisYg(createAxisY(Math.max.apply(Math, initData)));
+  svg.append('g').attr('class', 'axis-y').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('fill', 'transparent').attr('stroke', '#000').call(yAxis);
 
-  var x = d3.scaleLinear().domain([0, length - 1]).range([padding, width]);
+  var x = d3.scale.linear().domain([0, length - 1]).range([padding, width]);
 
   var path = svg.append('g').attr('clip-path', "url(#clip)").append('path').attr('class', 'line-path').style('fill', 'transparent').style('stroke', '#000').attr('transform', 'translate(0,' + padding + ')');
 
@@ -9808,12 +9804,11 @@ exports.default = function (dom) {
     var domain = Math.max.apply(Math, dataLink.map(function (d) {
       return d.data;
     }));
-    var y = d3.scaleLinear().domain([0, domain]).range([height - padding * 2, padding]);
 
-    svg.select('.axis-y').remove();
-    createAxisYg(createAxisY(domain));
+    y.domain([0, domain]);
+    svg.select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
 
-    var line = d3.line()
+    var line = d3.svg.line()
     //.curve(d3.curveCardinal.tension(0.5))
     .x(function (d, index) {
       return x(index);
@@ -9822,7 +9817,7 @@ exports.default = function (dom) {
     });
 
     var offsetx = dataLink.length < length + 1 ? 0 : x(0) - x(1);
-    path.attr('d', line(dataLink)).attr('transform', 'translate(0,' + padding + ')').transition().ease(d3.easeLinear).duration(duration - 50).attr('transform', 'translate(' + offsetx + ',' + padding + ')').on('end', function () {
+    path.attr('d', line(dataLink)).attr('transform', 'translate(0,' + padding + ')').transition().ease(d3.ease('linear')).duration(duration - 50).attr('transform', 'translate(' + offsetx + ',' + padding + ')').each('end', function () {
       if (offsetx === 0) {
         return;
       }
@@ -9934,30 +9929,7 @@ exports.default = function (content) {
 };
 
 /***/ }),
-/* 5 */,
-/* 6 */,
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _src = __webpack_require__(1);
-
-var _src2 = _interopRequireDefault(_src);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var maxNum = 100;
-var update = _src2.default.createDashBoard('#content', 400, 400, maxNum);
-
-window.setInterval(function () {
-  update(parseInt(Math.random() * maxNum));
-}, 2000);
-
-/***/ }),
-/* 8 */,
-/* 9 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10062,6 +10034,28 @@ exports.default = function (content) {
     texts.exit().remove();
   };
 };
+
+/***/ }),
+/* 6 */,
+/* 7 */,
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _src = __webpack_require__(1);
+
+var _src2 = _interopRequireDefault(_src);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var maxNum = 100;
+var update = _src2.default.createDashBoard('#content', 400, 400, maxNum);
+
+window.setInterval(function () {
+  update(parseInt(Math.random() * maxNum));
+}, 2000);
 
 /***/ })
 /******/ ]);
