@@ -9876,6 +9876,7 @@ exports.default = function (dom) {
     }));
 
     y.domain([0, domain]);
+
     svg.select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
 
     var line = d3.svg.line()

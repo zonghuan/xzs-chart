@@ -56,6 +56,7 @@ export default (dom,width=400,height=400,duration=1000)=>{
     var domain = Math.max.apply(Math,dataLink.map(d=>d.data))
 
     y.domain([0,domain])
+    
     svg.select('g.axis-y')
       .call(yAxis)
       .selectAll('text')
