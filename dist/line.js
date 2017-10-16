@@ -9811,6 +9811,8 @@ exports.default = function (dom) {
 
         g_data.exit().transition().attr('transform', 'scale(0,0)').each('end', function () {
             d3.select(this).remove();
+            this.on('mouseenter', null);
+            this.on('mouseleave', null);
         });
 
         // 文字变化
