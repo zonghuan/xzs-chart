@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -9649,7 +9649,7 @@ var _dashBoard = __webpack_require__(4);
 
 var _dashBoard2 = _interopRequireDefault(_dashBoard);
 
-var _columnar = __webpack_require__(9);
+var _columnar = __webpack_require__(5);
 
 var _columnar2 = _interopRequireDefault(_columnar);
 
@@ -9934,10 +9934,107 @@ exports.default = function (content) {
 };
 
 /***/ }),
-/* 5 */,
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+var d3 = __webpack_require__(0);
+
+exports.default = function (content) {
+    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 800;
+    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
+    var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
+
+    if (typeof content === 'string') {
+        content = document.querySelector(content);
+    }
+
+    var svg = d3.select(content).append('svg').attr('width', width).attr('height', height);
+
+    var d = [];
+    var padding = 50;
+    var y = d3.scale.linear().range([height - 2 * padding, 0]).domain([0, Math.max.apply(Math, d)]);
+
+    var yAxis = d3.svg.axis().scale(y).ticks(10).orient('left');
+
+    var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
+
+    var x = d3.scale.ordinal().rangePoints([0, width - padding * 2]).domain(['0', '1']);
+
+    var xAxis = d3.svg.axis().scale(x).orient('bottom');
+
+    var pathx = svg.append('g').attr('transform', 'translate(' + padding + ',' + (height - padding) + ')').attr('class', 'axis-x').attr('fill', 'transparent').attr('stroke', '#000').call(xAxis);
+
+    return function (arg) {
+        y.domain([0, Math.max.apply(Math, arg.map(function (a) {
+            return a.data;
+        }))]);
+        svg.transition().duration(duration).select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+
+        x.domain(['0'].concat(arg.map(function (a) {
+            return a.title;
+        })).concat(['']));
+        svg.transition().duration(duration).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+
+        var texts = svg.selectAll('text.th').data(arg, function (d) {
+            return d.title;
+        });
+        var fontSize = 16;
+        var rectWidth = 50;
+        var rects = svg.selectAll('rect.dh').data(arg, function (d) {
+            return d.title;
+        });
+
+        texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d) {
+            return x(d.title) + rectWidth / 2;
+        }).attr('y', function (d) {
+            return height - padding;
+        }).text(function (d) {
+            return d.data;
+        }).transition().duration(duration / 2).attr('y', function (d) {
+            return y(d.data) + padding - fontSize / 2;
+        });
+
+        texts.transition().duration(duration / 2).attr('y', function (d) {
+            return y(d.data) + padding - fontSize / 2;
+        }).attr('x', function (d) {
+            return x(d.title) + rectWidth / 2;
+        });
+
+        texts.exit().remove();
+
+        rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
+            return x(d.title) + rectWidth / 2;
+        }).attr('fill', '#3398db').attr('height', 0).attr('y', function (d) {
+            return height - padding;
+        }).transition().duration(duration).attr('y', function (d) {
+            return y(d.data) + padding;
+        }).attr('height', function (d) {
+            return height - padding * 2 - y(d.data);
+        });
+
+        rects.transition().attr('height', function (d) {
+            return height - padding * 2 - y(d.data);
+        }).attr('y', function (d) {
+            return y(d.data) + padding;
+        }).attr('x', function (d) {
+            return x(d.title) + rectWidth / 2;
+        });
+
+        rects.exit().remove();
+    };
+};
+
+/***/ }),
 /* 6 */,
 /* 7 */,
-/* 8 */
+/* 8 */,
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9960,127 +10057,17 @@ var update = _src2.default.createColumnar('#content', 800, 500);
 //   {title:"数据6",data:300}
 // ])
 
-window.setTimeout(function () {
+var d = [{ title: "数据1", data: 100 }, { title: "数据2", data: 200 }, { title: "数据3", data: 300 }, { title: "数据4", data: 400 }, { title: "数据5", data: 250 }, { title: "数据6", data: 300 }];
+var i = 6;
+var maxNum = 3000;
 
-  update([{ title: "数据1", data: 100 }, { title: "数据2", data: 200 }, { title: "数据3", data: 300 }, { title: "数据4", data: 400 }, { title: "数据5", data: 250 }, { title: "数据6", data: 300 }]);
-}, 1000);
+window.setInterval(function () {
 
-window.setTimeout(function () {
+  d.shift();
+  d.push({ title: '\u6570\u636E' + i++, data: (maxNum * Math.random()).toFixed(2) });
 
-  update([{ title: "数据1", data: 1000 }, { title: "数据2", data: 2300 }, { title: "数据3", data: 300 }, { title: "数据4", data: 400 }, { title: "数据5", data: 250 }, { title: "数据6", data: 300 }, { title: '数据7', data: 700 }]);
-}, 2000);
-
-window.setTimeout(function () {
-
-  update([{ title: "数据11", data: 1500 }, { title: "数据21", data: 2200 }, { title: "数据6", data: 1900 }, { title: "数据8", data: 600 }, { title: "数据5", data: 250 }, { title: "数据6", data: 300 }]);
-}, 3000);
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var d3 = __webpack_require__(0);
-
-exports.default = function (content) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 800;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
-  var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
-
-  if (typeof content === 'string') {
-    content = document.querySelector(content);
-  }
-
-  var svg = d3.select(content).append('svg').attr('width', width).attr('height', height);
-
-  var d = [];
-  var padding = 50;
-  var y = d3.scale.linear().range([height - 2 * padding, 0]).domain([0, Math.max.apply(Math, d)]);
-
-  var yAxis = d3.svg.axis().scale(y).ticks(10).orient('left');
-
-  var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
-
-  var x = d3.scale.ordinal().rangePoints([0, width - padding * 2]).domain(['0', '1']);
-
-  var xAxis = d3.svg.axis().scale(x).orient('bottom');
-
-  var pathx = svg.append('g').attr('transform', 'translate(' + padding + ',' + (height - padding) + ')').attr('class', 'axis-x').attr('fill', 'transparent').attr('stroke', '#000').call(xAxis);
-
-  return function (arg) {
-    y.domain([0, Math.max.apply(Math, arg.map(function (a) {
-      return a.data;
-    }))]);
-    svg.transition().duration(duration).select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
-
-    x.domain(['0'].concat(arg.map(function (a) {
-      return a.title;
-    })).concat(['']));
-    svg.transition().duration(duration).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
-
-    var rectWidth = 50;
-    var rects = svg.selectAll('rect.dh').data(arg, function (d) {
-      return d.title;
-    });
-
-    rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
-    }).attr('fill', '#000').attr('height', 0).attr('y', function (d) {
-      return height - padding;
-    }).transition().duration(duration).attr('y', function (d) {
-      return y(d.data) + padding;
-    }).attr('height', function (d) {
-      return height - padding * 2 - y(d.data);
-    });
-
-    rects.transition().attr('height', function (d) {
-      return height - padding * 2 - y(d.data);
-    }).attr('y', function (d) {
-      return y(d.data) + padding;
-    }).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
-    });
-
-    rects.exit().transition().attr('y', function (d) {
-      return y(d.data) + padding;
-    }).attr('height', 0).each('end', function () {
-      d3.select(this).remove();
-    });
-
-    var texts = svg.selectAll('text.th').data(arg, function (d) {
-      return d.title;
-    });
-    var fontSize = 16;
-    texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
-    }).attr('y', function (d) {
-      return height - padding;
-    }).text(function (d) {
-      return d.data;
-    }).transition().duration(duration / 2).attr('y', function (d) {
-      return y(d.data) + padding - fontSize / 2;
-    });
-
-    texts.transition().duration(duration / 2).attr('y', function (d) {
-      return y(d.data) + padding - fontSize / 2;
-    }).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
-    }).tween('transform', function (data, i) {
-      var d = d3.select(this);
-      var cur = parseInt(d.text().replace(/\D/g, ''));
-      return function (t) {
-        d.text(parseInt(cur + (data.data - cur) * t));
-      };
-    });
-
-    texts.exit().remove();
-  };
-};
+  update(d);
+}, 4000);
 
 /***/ })
 /******/ ]);
