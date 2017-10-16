@@ -9670,89 +9670,159 @@ exports.default = {
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 var d3 = __webpack_require__(0);
 
 exports.default = function (dom) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
+    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
+    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
 
-  if (typeof dom === 'string') {
-    dom = document.querySelector(dom);
-  }
-  var wrap = document.createElement('div');
-  dom.appendChild(wrap);
-  var svg = d3.select(wrap).style('position', 'relative').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-  var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
+    if (typeof dom === 'string') {
+        dom = document.querySelector(dom);
+    }
+    var wrap = document.createElement('div');
+    dom.appendChild(wrap);
+    var svg = d3.select(wrap).style('position', 'relative').append('svg').attr('width', width).attr('height', height).append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+    var colors = ["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"];
 
-  return function (list) {
+    var SIN = Math.sin;
+    var COS = Math.cos;
+    var angleArr = [];
 
-    // list => [{title:"标题",data:123}]
-    var RADIUS = width * 3 / 8;
-    var sum = list.reduce(function ($1, $2) {
-      return $1 + $2.data;
-    }, 0);
-    var curRect = function curRect(index) {
-      return list.filter(function (data, dex) {
-        return dex <= index;
-      }).reduce(function ($1, $2) {
-        return $1 + $2.data;
-      }, 0) / sum;
+    return function (list) {
+        angleArr = [];
+
+        // list => [{title:"标题",data:123}]
+
+        var RADIUS = width * 3 / 8;
+        var sum = list.reduce(function ($1, $2) {
+            return $1 + $2.data;
+        }, 0);
+        var curRect = function curRect(index) {
+            return list.filter(function (data, dex) {
+                return dex <= index;
+            }).reduce(function ($1, $2) {
+                return $1 + $2.data;
+            }, 0) / sum;
+        };
+
+        var arc = function arc(index, radius) {
+
+            // console.log(index);
+            var startAngle = (index === 0 ? 0 : curRect(index - 1)) * Math.PI * 2;
+            var endAngle = curRect(index) * Math.PI * 2;
+
+            if (angleArr.length < list.length) {
+                angleArr.push((Math.PI - endAngle - startAngle) / 2);
+            }
+
+            return d3.svg.arc().padAngle(Math.PI / 180).innerRadius(0).outerRadius(radius || RADIUS).cornerRadius(5).startAngle(startAngle).endAngle(endAngle)();
+        };
+
+        var ease = d3.ease('sin');
+
+        var arcText = function arcText(index, radius) {
+            var r = radius || RADIUS + 25;
+            var startAngle = (index === 0 ? 0 : curRect(index - 1)) * Math.PI * 2;
+            var endAngle = curRect(index) * Math.PI * 2;
+            var centerAngle = (endAngle + startAngle) / 2;
+
+            var x = r * Math.sin(centerAngle);
+            var y = -r * Math.cos(centerAngle);
+            return [x, y, centerAngle];
+        };
+
+        // 图案变化
+        var g_data = svg.selectAll('g').data(list, function (data, index) {
+            return index;
+        });
+        var g = g_data.enter().append('g');
+
+        // text
+        var text = g.append('text').data(list, function (data, index) {
+            return index;
+        }).attr('x', function (data, index) {
+            return arcText(index)[0];
+        }).attr('y', function (data, index) {
+            return arcText(index)[1];
+        }).attr('transform', function (data, index) {
+            return 'rotate(' + arcText(index)[2] * 180 / Math.PI + ',' + arcText(index)[0] + ',' + arcText(index)[1] + ')';
+        });
+
+        text.append('tspan').html(function (data, index) {
+            return data.title;
+        }).attr('dx', 0);
+        text.append('tspan').html(function (data, index) {
+            return data.data;
+        }).attr('dx', function (data, index) {
+            return -12 * data.title.length;
+        }).attr('dy', 15);
+
+        // arc
+        g.append('path').style('fill', function (data, index) {
+            return colors[index % colors.length];
+        });
+        // .attr('d',(data,index)=>{ return arc(index)})  下面还有一次arc(index) 不能设两次
+
+        // - mouse event
+        g.each(function (e, i) {
+            var _this = d3.select(this);
+            var ang = angleArr[i];
+
+            _this.on('mouseenter', function () {
+                _this.transition().duration(200).ease(ease).attr('transform', 'translate(' + COS(ang) * 10 + ',' + -SIN(ang) * 10 + ')');
+            });
+
+            _this.on('mouseleave', function () {
+                _this.transition().duration(200).ease(ease).attr('transform', 'translate(0,0)');
+            });
+        });
+
+        g.attr('transform', 'scale(.01,.01)').transition().duration(500).delay(function (data, index) {
+            return index * 100;
+        }).ease(ease).attr('transform', 'scale(1,1)');
+
+        var g_data_transition = g_data.transition().duration(1000).attr('transform', 'scale(1,1)');
+        g_data_transition.select('path').attr('d', function (data, index) {
+            return arc(index);
+        });
+
+        g_data_transition.select('text').attr('x', function (data, index) {
+            return arcText(index)[0];
+        }).attr('y', function (data, index) {
+            return arcText(index)[1];
+        }).attr('transform', function (data, index) {
+            return 'rotate(' + arcText(index)[2] * 180 / Math.PI + ',' + arcText(index)[0] + ',' + arcText(index)[1] + ')';
+        });
+
+        g_data.each(function (e, i) {
+            var _this = d3.select(this);
+            var ang = angleArr[i];
+
+            _this.on('mouseenter', function () {
+                _this.transition().duration(200).ease(ease).attr('transform', 'translate(' + COS(ang) * 10 + ',' + -SIN(ang) * 10 + ')');
+            });
+
+            _this.on('mouseleave', function () {
+                _this.transition().duration(200).ease(ease).attr('transform', 'translate(0,0)');
+            });
+        });
+
+        g_data.exit().each(function () {
+            d3.select(this).on('mouseenter', null).on('mouseleave', null);
+        }).transition().attr('transform', 'scale(0,0)').each('end', function () {
+            d3.select(this).remove();
+        });
+
+        // 文字变化
+        text.each(function (d, index) {
+            var pix = arcText(index);
+            d3.select(this).transition().duration(1000).attr('x', pix[0]).attr('y', pix[1]).attr('transform', 'rotate(' + pix[2] * 180 / Math.PI + ',' + pix[0] + ',' + pix[1] + ')');
+        });
+
+        text.exit().remove();
     };
-    var arc = function arc(index, radius) {
-      var startAngle = (index === 0 ? 0 : curRect(index - 1)) * Math.PI * 2;
-      var endAngle = curRect(index) * Math.PI * 2;
-      return d3.svg.arc().padAngle(Math.PI / 180).innerRadius(0).outerRadius(radius || RADIUS).cornerRadius(5).startAngle(startAngle).endAngle(endAngle)();
-    };
-    var ease = d3.ease('sin');
-    var arcText = function arcText(index, radius) {
-      var r = radius || RADIUS + 25;
-      var startAngle = (index === 0 ? 0 : curRect(index - 1)) * Math.PI * 2;
-      var endAngle = curRect(index) * Math.PI * 2;
-      var centerAngle = (endAngle + startAngle) / 2;
-      var x = r * Math.sin(centerAngle);
-      var y = -r * Math.cos(centerAngle);
-      return [x, y, centerAngle];
-    };
-
-    // 图案变化
-    var path = svg.selectAll('path').data(list, function (data, index) {
-      return index;
-    });
-    path.enter().append('path').style('fill', function (data, index) {
-      return colors[index % colors.length];
-    }).attr('d', function (data, index) {
-      return arc(index);
-    }).attr('transform', 'scale(.01,.01)').transition().duration(500).delay(function (data, index) {
-      return index * 100;
-    }).ease(ease).attr('transform', 'scale(1,1)');
-    path.transition().duration(1000).attr('d', function (data, index) {
-      return arc(index);
-    }).attr('transform', 'scale(1,1)');
-
-    path.exit().transition().attr('transform', 'scale(0,0)').each('end', function () {
-      d3.select(this).remove();
-    });
-
-    // 文字变化
-    var text = svg.selectAll('text').data(list, function (data, index) {
-      return index;
-    });
-    text.enter().append('text').each(function (d, index) {
-      var pix = arcText(index);
-      var p = d3.select(this).attr('x', pix[0]).attr('y', pix[1]).attr('transform', 'rotate(' + pix[2] * 180 / Math.PI + ',' + pix[0] + ',' + pix[1] + ')');
-      p.append('tspan').html(d.title).attr('dx', 0);
-      p.append('tspan').html(d.data).attr('dx', -12 * d.title.length).attr('dy', 15);
-    });
-
-    text.each(function (d, index) {
-      var pix = arcText(index);
-      d3.select(this).transition().duration(1000).attr('x', pix[0]).attr('y', pix[1]).attr('transform', 'rotate(' + pix[2] * 180 / Math.PI + ',' + pix[0] + ',' + pix[1] + ')');
-    });
-
-    text.exit().remove();
-  };
 };
 
 /***/ }),
@@ -9941,93 +10011,93 @@ exports.default = function (content) {
 
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 var d3 = __webpack_require__(0);
 
 exports.default = function (content) {
-    var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 800;
-    var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
-    var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
+  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 800;
+  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
+  var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
 
-    if (typeof content === 'string') {
-        content = document.querySelector(content);
-    }
+  if (typeof content === 'string') {
+    content = document.querySelector(content);
+  }
 
-    var svg = d3.select(content).append('svg').attr('width', width).attr('height', height);
+  var svg = d3.select(content).append('svg').attr('width', width).attr('height', height);
 
-    var d = [];
-    var padding = 50;
-    var y = d3.scale.linear().range([height - 2 * padding, 0]).domain([0, Math.max.apply(Math, d)]);
+  var d = [];
+  var padding = 50;
+  var y = d3.scale.linear().range([height - 2 * padding, 0]).domain([0, Math.max.apply(Math, d)]);
 
-    var yAxis = d3.svg.axis().scale(y).ticks(10).orient('left');
+  var yAxis = d3.svg.axis().scale(y).ticks(10).orient('left');
 
-    var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
+  var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
 
-    var x = d3.scale.ordinal().rangePoints([0, width - padding * 2]).domain(['0', '1']);
+  var x = d3.scale.ordinal().rangePoints([0, width - padding * 2]).domain(['0', '1']);
 
-    var xAxis = d3.svg.axis().scale(x).orient('bottom');
+  var xAxis = d3.svg.axis().scale(x).orient('bottom');
 
-    var pathx = svg.append('g').attr('transform', 'translate(' + padding + ',' + (height - padding) + ')').attr('class', 'axis-x').attr('fill', 'transparent').attr('stroke', '#000').call(xAxis);
+  var pathx = svg.append('g').attr('transform', 'translate(' + padding + ',' + (height - padding) + ')').attr('class', 'axis-x').attr('fill', 'transparent').attr('stroke', '#000').call(xAxis);
 
-    return function (arg) {
-        y.domain([0, Math.max.apply(Math, arg.map(function (a) {
-            return a.data;
-        }))]);
-        svg.transition().duration(duration).select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+  return function (arg) {
+    y.domain([0, Math.max.apply(Math, arg.map(function (a) {
+      return a.data;
+    }))]);
+    svg.transition().duration(duration).select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
 
-        x.domain(['0'].concat(arg.map(function (a) {
-            return a.title;
-        })).concat(['']));
-        svg.transition().duration(duration).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+    x.domain(['0'].concat(arg.map(function (a) {
+      return a.title;
+    })).concat(['']));
+    svg.transition().duration(duration).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
 
-        var texts = svg.selectAll('text.th').data(arg, function (d) {
-            return d.title;
-        });
-        var fontSize = 16;
-        var rectWidth = 50;
-        var rects = svg.selectAll('rect.dh').data(arg, function (d) {
-            return d.title;
-        });
+    var texts = svg.selectAll('text.th').data(arg, function (d) {
+      return d.title;
+    });
+    var fontSize = 16;
+    var rectWidth = 50;
+    var rects = svg.selectAll('rect.dh').data(arg, function (d) {
+      return d.title;
+    });
 
-        texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d) {
-            return x(d.title) + rectWidth / 2;
-        }).attr('y', function (d) {
-            return height - padding;
-        }).text(function (d) {
-            return d.data;
-        }).transition().duration(duration / 2).attr('y', function (d) {
-            return y(d.data) + padding - fontSize / 2;
-        });
+    texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    }).attr('y', function (d) {
+      return height - padding;
+    }).text(function (d) {
+      return d.data;
+    }).transition().duration(duration / 2).attr('y', function (d) {
+      return y(d.data) + padding - fontSize / 2;
+    });
 
-        texts.transition().duration(duration / 2).attr('y', function (d) {
-            return y(d.data) + padding - fontSize / 2;
-        }).attr('x', function (d) {
-            return x(d.title) + rectWidth / 2;
-        });
+    texts.transition().duration(duration / 2).attr('y', function (d) {
+      return y(d.data) + padding - fontSize / 2;
+    }).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    });
 
-        texts.exit().remove();
+    texts.exit().remove();
 
-        rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
-            return x(d.title) + rectWidth / 2;
-        }).attr('fill', '#3398db').attr('height', 0).attr('y', function (d) {
-            return height - padding;
-        }).transition().duration(duration).attr('y', function (d) {
-            return y(d.data) + padding;
-        }).attr('height', function (d) {
-            return height - padding * 2 - y(d.data);
-        });
+    rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    }).attr('fill', '#3398db').attr('height', 0).attr('y', function (d) {
+      return height - padding;
+    }).transition().duration(duration).attr('y', function (d) {
+      return y(d.data) + padding;
+    }).attr('height', function (d) {
+      return height - padding * 2 - y(d.data);
+    });
 
-        rects.transition().attr('height', function (d) {
-            return height - padding * 2 - y(d.data);
-        }).attr('y', function (d) {
-            return y(d.data) + padding;
-        }).attr('x', function (d) {
-            return x(d.title) + rectWidth / 2;
-        });
+    rects.transition().attr('height', function (d) {
+      return height - padding * 2 - y(d.data);
+    }).attr('y', function (d) {
+      return y(d.data) + padding;
+    }).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    });
 
-        rects.exit().remove();
-    };
+    rects.exit().remove();
+  };
 };
 
 /***/ }),
