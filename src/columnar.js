@@ -57,14 +57,34 @@ export default (content,width=800,height=500,duration=1000)=>{
       .attr('fill','#000')
       .attr('stroke','transparent')
 
+    var texts = svg.selectAll('text.th').data(arg,d=>d.title)
+    var fontSize = 16
     var rectWidth = 50
     var rects = svg.selectAll('rect.dh').data(arg,d=>d.title)
+
+    texts.enter().append('text')
+      .attr('class','th')
+      .style('font-size',fontSize)
+      .attr('x',d=>(x(d.title)+rectWidth/2))
+      .attr('y',d=>(height-padding))
+      .text(d=>d.data)
+      .transition()
+      .duration(duration/2)
+      .attr('y',d=>(y(d.data)+padding-fontSize/2))
+
+    texts
+      .transition()
+      .duration(duration/2)
+      .attr('y',d=>(y(d.data)+padding-fontSize/2))
+      .attr('x',d=>(x(d.title)+rectWidth/2))
+
+    texts.exit().remove()
 
     rects.enter().append('rect')
         .attr('class','dh')
         .attr('width',rectWidth)
         .attr('x',d=>(x(d.title)+rectWidth/2))
-        .attr('fill','#000')
+        .attr('fill','#3398db')
         .attr('height',0)
         .attr('y',d=>(height-padding))
         .transition()
@@ -77,38 +97,7 @@ export default (content,width=800,height=500,duration=1000)=>{
       .attr('y',d=>(y(d.data)+padding))
       .attr('x',d=>(x(d.title)+rectWidth/2))
 
-    rects.exit().transition()
-      .attr('y',d=>(y(d.data)+padding))
-      .attr('height',0)
-      .each('end',function(){
-        d3.select(this).remove()
-      })
-
-    var texts = svg.selectAll('text.th').data(arg,d=>d.title)
-    var fontSize = 16
-    texts.enter().append('text')
-      .attr('class','th')
-      .style('font-size',fontSize)
-      .attr('x',d=>(x(d.title)+rectWidth/2))
-      .attr('y',d=>(height-padding))
-      .text(d=>d.data)
-      .transition()
-      .duration(duration/2)
-      .attr('y',d=>(y(d.data)+padding-fontSize/2))
-
-    texts.transition()
-      .duration(duration/2)
-      .attr('y',d=>(y(d.data)+padding-fontSize/2))
-      .attr('x',d=>(x(d.title)+rectWidth/2))
-      .tween('transform',function(data,i){
-        var d = d3.select(this)
-        var cur = parseInt(d.text().replace(/\D/g,''))
-        return t=>{
-          d.text(parseInt(cur+(data.data-cur)*t))
-        }
-      })
-
-    texts.exit().remove()
+    rects.exit().remove()
 
   }
 }
