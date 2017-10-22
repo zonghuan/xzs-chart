@@ -9837,64 +9837,98 @@ Object.defineProperty(exports, "__esModule", {
 });
 var d3 = __webpack_require__(0);
 
-exports.default = function (dom) {
-  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 400;
-  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 400;
+exports.default = function (content) {
+  var width = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 800;
+  var height = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 500;
   var duration = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1000;
 
-
-  if (typeof dom === 'string') {
-    dom = document.querySelector(dom);
+  if (typeof content === 'string') {
+    content = document.querySelector(content);
   }
-  var dataLink = [];
-  var length = 6;
-  var padding = 30;
-  var svg = d3.select(dom).append('svg').attr('width', width).attr('height', height);
 
-  var initData = [];
+  var arg = [];
+  var maxLength = 7;
 
-  // 定义裁剪区域
-  svg.append('defs').append('clipPath').attr('id', 'clip').append('rect').attr('x', padding).attr('y', padding).attr('width', width - padding).attr('height', height - padding);
+  var svg = d3.select(content).append('svg').attr('width', width).attr('height', height);
 
-  var y = d3.scale.linear().domain([0, 100]).range([height - padding * 2, padding]);
+  var d = [];
+  var padding = 50;
+  var y = d3.scale.linear().range([height - 2 * padding, 0]).domain([0, Math.max.apply(Math, d)]);
 
-  var yAxis = d3.svg.axis().scale(y).orient('left');
+  var yAxis = d3.svg.axis().scale(y).ticks(10).orient('left');
 
-  svg.append('g').attr('class', 'axis-y').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('fill', 'transparent').attr('stroke', '#000').call(yAxis);
+  var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
 
-  var x = d3.scale.linear().domain([0, length - 1]).range([padding, width]);
+  var x = d3.scale.ordinal().rangePoints([0, width - padding * 2]).domain(['0', '1']);
 
-  var path = svg.append('g').attr('clip-path', "url(#clip)").append('path').attr('class', 'line-path').style('fill', 'transparent').style('stroke', '#000').attr('transform', 'translate(0,' + padding + ')');
+  var xAxis = d3.svg.axis().scale(x).orient('bottom');
 
-  return function (obj) {
+  var pathx = svg.append('g').attr('transform', 'translate(' + padding + ',' + (height - padding) + ')').attr('class', 'axis-x').attr('fill', 'transparent').attr('stroke', '#000').call(xAxis);
 
-    dataLink.push(obj);
+  return function (argu) {
 
-    // 左侧
-    var domain = Math.max.apply(Math, dataLink.map(function (d) {
+    arg.push(argu);
+    argu.timeStamp = +new Date();
+    if (arg.length > maxLength) {
+      arg.shift();
+    }
+
+    y.domain([0, Math.max.apply(Math, arg.map(function (a) {
+      return a.data;
+    }))]);
+    svg.transition().duration(duration).select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+
+    x.domain(['0'].concat(arg.map(function (a) {
+      return a.title;
+    })).concat(['']));
+    svg.transition().duration(duration).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+
+    var texts = svg.selectAll('text.th').data(arg, function (d) {
+      return d.timeStamp;
+    });
+    var fontSize = 16;
+    var rectWidth = 50;
+    var rects = svg.selectAll('rect.dh').data(arg, function (d) {
+      return d.timeStamp;
+    });
+
+    texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    }).attr('y', function (d) {
+      return height - padding;
+    }).text(function (d) {
       return d.data;
-    }));
-
-    y.domain([0, domain]);
-
-    svg.select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
-
-    var line = d3.svg.line()
-    //.curve(d3.curveCardinal.tension(0.5))
-    .x(function (d, index) {
-      return x(index);
-    }).y(function (d) {
-      return y(d.data);
+    }).transition().duration(duration / 2).attr('y', function (d) {
+      return y(d.data) + padding - fontSize / 2;
     });
 
-    var offsetx = dataLink.length < length + 1 ? 0 : x(0) - x(1);
-    path.attr('d', line(dataLink)).attr('transform', 'translate(0,' + padding + ')').transition().ease(d3.ease('linear')).duration(duration - 50).attr('transform', 'translate(' + offsetx + ',' + padding + ')').each('end', function () {
-      if (offsetx === 0) {
-        return;
-      }
-      dataLink.shift();
-      d3.select(undefined).datum(dataLink).attr('d', line).attr('transform', 'translate(0,' + padding + ')');
+    texts.transition().duration(duration / 2).attr('y', function (d) {
+      return y(d.data) + padding - fontSize / 2;
+    }).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
     });
+
+    texts.exit().remove();
+
+    rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    }).attr('fill', '#3398db').attr('height', 0).attr('y', function (d) {
+      return height - padding;
+    }).transition().duration(duration).attr('y', function (d) {
+      return y(d.data) + padding;
+    }).attr('height', function (d) {
+      return height - padding * 2 - y(d.data);
+    });
+
+    rects.transition().attr('height', function (d) {
+      return height - padding * 2 - y(d.data);
+    }).attr('y', function (d) {
+      return y(d.data) + padding;
+    }).attr('x', function (d) {
+      return x(d.title) + rectWidth / 2;
+    });
+
+    rects.exit().remove();
   };
 };
 
