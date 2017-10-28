@@ -30,20 +30,9 @@ export default (content,width=800,height=500,duration=1000)=>{
       .attr('class','axis-y')
       .call(yAxis)
 
-  var x = d3.scale.ordinal()
-      .rangePoints([0,width-padding*2])
-      .domain(['0','1'])
-
-  var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient('bottom')
-
-  var pathx = svg.append('g')
-      .attr('transform',`translate(${padding},${height-padding})`)
-      .attr('class','axis-x')
-      .attr('fill','transparent')
-      .attr('stroke','#000')
-      .call(xAxis)
+  var x = d3.scale.linear()
+      .range([padding+10,width-padding])
+      .domain([0,5])
 
   return (argu)=>{
 
@@ -60,22 +49,16 @@ export default (content,width=800,height=500,duration=1000)=>{
         .attr('fill','#000')
         .attr('stroke','transparent')
 
-    x.domain(['0'].concat(arg.map(a=>a.title)).concat(['']))
-    svg.transition().duration(duration).select('g.axis-x')
-      .call(xAxis)
-      .selectAll('text')
-      .attr('fill','#000')
-      .attr('stroke','transparent')
+    x.domain([0,arg.length-1])
 
     var texts = svg.selectAll('text.th').data(arg,d=>d.timeStamp)
     var fontSize = 16
     var rectWidth = 50
-    var rects = svg.selectAll('rect.dh').data(arg,d=>d.timeStamp)
 
     texts.enter().append('text')
       .attr('class','th')
       .style('font-size',fontSize)
-      .attr('x',d=>(x(d.title)+rectWidth/2))
+      .attr('x',(d,index)=>x(index))
       .attr('y',d=>(height-padding))
       .text(d=>d.data)
       .transition()
@@ -86,28 +69,46 @@ export default (content,width=800,height=500,duration=1000)=>{
       .transition()
       .duration(duration/2)
       .attr('y',d=>(y(d.data)+padding-fontSize/2))
-      .attr('x',d=>(x(d.title)+rectWidth/2))
+      .attr('x',(d,index)=>x(index))
 
     texts.exit().remove()
 
-    rects.enter().append('rect')
-        .attr('class','dh')
-        .attr('width',rectWidth)
-        .attr('x',d=>(x(d.title)+rectWidth/2))
-        .attr('fill','#3398db')
-        .attr('height',0)
-        .attr('y',d=>(height-padding))
-        .transition()
-        .duration(duration)
-        .attr('y',d=>(y(d.data)+padding))
-        .attr('height',d=>(height-padding*2-y(d.data)))
+    //var rects = svg.selectAll('rect.dh').data(arg,d=>d.timeStamp)
 
-    rects.transition()
-      .attr('height',d=>(height-padding*2-y(d.data)))
-      .attr('y',d=>(y(d.data)+padding))
-      .attr('x',d=>(x(d.title)+rectWidth/2))
+    // rects.enter().append('rect')
+    //     .attr('class','dh')
+    //     .attr('width',rectWidth)
+    //     .attr('x',(d,index)=>x(index))
+    //     .attr('fill','#3398db')
+    //     .attr('height',0)
+    //     .attr('y',d=>(height-padding))
+    //     .transition()
+    //     .duration(duration)
+    //     .attr('y',d=>(y(d.data)+padding))
+    //     .attr('height',d=>(height-padding*2-y(d.data)))
 
-    rects.exit().remove()
+    // rects.transition()
+    //   .attr('height',d=>(height-padding*2-y(d.data)))
+    //   .attr('y',d=>(y(d.data)+padding))
+    //   .attr('x',(d,index)=>x(index))
+
+    // rects.exit().remove()
+
+    var circles = svg.selectAll('circle.cc').data(arg,d=>d.timeStamp)
+
+    circles.enter().append('circle')
+      .attr('class','cc')
+      .attr('r',3)
+      .attr('cx',(d,index)=>x(index)+5)
+      .attr('cy',d=>(y(d.data)+padding))
+      .style('stroke','#000')
+      .style('fill','none')
+
+    circles.transition()
+      .attr('cy',d=>(y(d.data)+padding))
+      .attr('cx',(d,index)=>x(index)+5)
+
+    circles.exit().remove()
 
   }
 }

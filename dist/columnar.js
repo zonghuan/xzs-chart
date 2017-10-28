@@ -9859,11 +9859,7 @@ exports.default = function (content) {
 
   var pathy = svg.append('g').attr('transform', 'translate(' + padding + ',' + padding + ')').attr('stroke', '#000').attr('fill', 'transparent').attr('class', 'axis-y').call(yAxis);
 
-  var x = d3.scale.ordinal().rangePoints([0, width - padding * 2]).domain(['0', '1']);
-
-  var xAxis = d3.svg.axis().scale(x).orient('bottom');
-
-  var pathx = svg.append('g').attr('transform', 'translate(' + padding + ',' + (height - padding) + ')').attr('class', 'axis-x').attr('fill', 'transparent').attr('stroke', '#000').call(xAxis);
+  var x = d3.scale.linear().range([padding + 10, width - padding]).domain([0, 5]);
 
   return function (argu) {
 
@@ -9878,22 +9874,16 @@ exports.default = function (content) {
     }))]);
     svg.transition().duration(duration).select('g.axis-y').call(yAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
 
-    x.domain(['0'].concat(arg.map(function (a) {
-      return a.title;
-    })).concat(['']));
-    svg.transition().duration(duration).select('g.axis-x').call(xAxis).selectAll('text').attr('fill', '#000').attr('stroke', 'transparent');
+    x.domain([0, arg.length - 1]);
 
     var texts = svg.selectAll('text.th').data(arg, function (d) {
       return d.timeStamp;
     });
     var fontSize = 16;
     var rectWidth = 50;
-    var rects = svg.selectAll('rect.dh').data(arg, function (d) {
-      return d.timeStamp;
-    });
 
-    texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
+    texts.enter().append('text').attr('class', 'th').style('font-size', fontSize).attr('x', function (d, index) {
+      return x(index);
     }).attr('y', function (d) {
       return height - padding;
     }).text(function (d) {
@@ -9904,31 +9894,50 @@ exports.default = function (content) {
 
     texts.transition().duration(duration / 2).attr('y', function (d) {
       return y(d.data) + padding - fontSize / 2;
-    }).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
+    }).attr('x', function (d, index) {
+      return x(index);
     });
 
     texts.exit().remove();
 
-    rects.enter().append('rect').attr('class', 'dh').attr('width', rectWidth).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
-    }).attr('fill', '#3398db').attr('height', 0).attr('y', function (d) {
-      return height - padding;
-    }).transition().duration(duration).attr('y', function (d) {
-      return y(d.data) + padding;
-    }).attr('height', function (d) {
-      return height - padding * 2 - y(d.data);
+    //var rects = svg.selectAll('rect.dh').data(arg,d=>d.timeStamp)
+
+    // rects.enter().append('rect')
+    //     .attr('class','dh')
+    //     .attr('width',rectWidth)
+    //     .attr('x',(d,index)=>x(index))
+    //     .attr('fill','#3398db')
+    //     .attr('height',0)
+    //     .attr('y',d=>(height-padding))
+    //     .transition()
+    //     .duration(duration)
+    //     .attr('y',d=>(y(d.data)+padding))
+    //     .attr('height',d=>(height-padding*2-y(d.data)))
+
+    // rects.transition()
+    //   .attr('height',d=>(height-padding*2-y(d.data)))
+    //   .attr('y',d=>(y(d.data)+padding))
+    //   .attr('x',(d,index)=>x(index))
+
+    // rects.exit().remove()
+
+    var circles = svg.selectAll('circle.cc').data(arg, function (d) {
+      return d.timeStamp;
     });
 
-    rects.transition().attr('height', function (d) {
-      return height - padding * 2 - y(d.data);
-    }).attr('y', function (d) {
+    circles.enter().append('circle').attr('class', 'cc').attr('r', 3).attr('cx', function (d, index) {
+      return x(index) + 5;
+    }).attr('cy', function (d) {
       return y(d.data) + padding;
-    }).attr('x', function (d) {
-      return x(d.title) + rectWidth / 2;
+    }).style('stroke', '#000').style('fill', 'none');
+
+    circles.transition().attr('cy', function (d) {
+      return y(d.data) + padding;
+    }).attr('cx', function (d, index) {
+      return x(index) + 5;
     });
 
-    rects.exit().remove();
+    circles.exit().remove();
   };
 };
 
