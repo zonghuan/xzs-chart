@@ -34,6 +34,11 @@ export default (content,width=800,height=500,duration=1000)=>{
       .range([padding+10,width-padding])
       .domain([0,5])
 
+  var path = svg.append('path')
+      .attr('class','line')
+      .style('stroke','#000')
+      .style('fill','none')
+
   return (argu)=>{
 
     arg.push(argu)
@@ -73,27 +78,6 @@ export default (content,width=800,height=500,duration=1000)=>{
 
     texts.exit().remove()
 
-    //var rects = svg.selectAll('rect.dh').data(arg,d=>d.timeStamp)
-
-    // rects.enter().append('rect')
-    //     .attr('class','dh')
-    //     .attr('width',rectWidth)
-    //     .attr('x',(d,index)=>x(index))
-    //     .attr('fill','#3398db')
-    //     .attr('height',0)
-    //     .attr('y',d=>(height-padding))
-    //     .transition()
-    //     .duration(duration)
-    //     .attr('y',d=>(y(d.data)+padding))
-    //     .attr('height',d=>(height-padding*2-y(d.data)))
-
-    // rects.transition()
-    //   .attr('height',d=>(height-padding*2-y(d.data)))
-    //   .attr('y',d=>(y(d.data)+padding))
-    //   .attr('x',(d,index)=>x(index))
-
-    // rects.exit().remove()
-
     var circles = svg.selectAll('circle.cc').data(arg,d=>d.timeStamp)
 
     circles.enter().append('circle')
@@ -109,6 +93,48 @@ export default (content,width=800,height=500,duration=1000)=>{
       .attr('cx',(d,index)=>x(index)+5)
 
     circles.exit().remove()
+
+    var line = d3.svg.line()
+      .x((d,index)=>x(index)+5)
+      .y(d=>(y(d.data)+padding))
+
+    path
+      .transition()
+      // .tween('transition',function(){
+      //   var ele = d3.select(this)
+      //   var d = d3.select(this).datum()||[]
+      //   if(d.length===0){
+      //     return t=>{}
+      //   }
+      //   var ar = []
+      //   if(d.length<maxLength){
+      //     for(var i=0;i<arg.length;i++){
+      //       ar.push(arg[i].data-(d[i]&&d[i].data)||0)
+      //     }
+      //     return t=>{
+      //       var da = Object.assign([],arg)
+      //       for(var i=0;i<da.length;i++){
+      //         da[i].data = ((d[i]&&d[i].data)||0)+t*ar[i]
+      //       }
+      //       ele.attr('d',d=>line(da))
+      //     }
+      //   }
+      //
+      //   for(var i=0;i<arg.length-1;i++){
+      //     ar[i] = arg[i].data-d[i+1].data
+      //   }
+      //
+      //   return (t)=>{
+      //     var da = Object.assign([],arg)
+      //     for(var i=0;i<ar.length;i++){
+      //       da[i].data = d[i+1].data+t*ar[i]
+      //     }
+      //     ele.attr('d',d=>line(da))
+      //   }
+      // }).each('end',function(){
+      //   d3.select(this).datum(arg)
+      // })
+      //.attr('d',d=>line(d))
 
   }
 }

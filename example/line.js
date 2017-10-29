@@ -8,4 +8,4 @@ var randomData = ()=>Math.round(Math.random()*100)
 
 window.setInterval(()=>{
   update({title:randomTitle(),data:randomData()})
-},3000)
+},1000)

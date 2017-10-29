@@ -9861,6 +9861,8 @@ exports.default = function (content) {
 
   var x = d3.scale.linear().range([padding + 10, width - padding]).domain([0, 5]);
 
+  var path = svg.append('path').attr('class', 'line').style('stroke', '#000').style('fill', 'none');
+
   return function (argu) {
 
     arg.push(argu);
@@ -9900,27 +9902,6 @@ exports.default = function (content) {
 
     texts.exit().remove();
 
-    //var rects = svg.selectAll('rect.dh').data(arg,d=>d.timeStamp)
-
-    // rects.enter().append('rect')
-    //     .attr('class','dh')
-    //     .attr('width',rectWidth)
-    //     .attr('x',(d,index)=>x(index))
-    //     .attr('fill','#3398db')
-    //     .attr('height',0)
-    //     .attr('y',d=>(height-padding))
-    //     .transition()
-    //     .duration(duration)
-    //     .attr('y',d=>(y(d.data)+padding))
-    //     .attr('height',d=>(height-padding*2-y(d.data)))
-
-    // rects.transition()
-    //   .attr('height',d=>(height-padding*2-y(d.data)))
-    //   .attr('y',d=>(y(d.data)+padding))
-    //   .attr('x',(d,index)=>x(index))
-
-    // rects.exit().remove()
-
     var circles = svg.selectAll('circle.cc').data(arg, function (d) {
       return d.timeStamp;
     });
@@ -9938,6 +9919,49 @@ exports.default = function (content) {
     });
 
     circles.exit().remove();
+
+    var line = d3.svg.line().x(function (d, index) {
+      return x(index) + 5;
+    }).y(function (d) {
+      return y(d.data) + padding;
+    });
+
+    path.transition();
+    // .tween('transition',function(){
+    //   var ele = d3.select(this)
+    //   var d = d3.select(this).datum()||[]
+    //   if(d.length===0){
+    //     return t=>{}
+    //   }
+    //   var ar = []
+    //   if(d.length<maxLength){
+    //     for(var i=0;i<arg.length;i++){
+    //       ar.push(arg[i].data-(d[i]&&d[i].data)||0)
+    //     }
+    //     return t=>{
+    //       var da = Object.assign([],arg)
+    //       for(var i=0;i<da.length;i++){
+    //         da[i].data = ((d[i]&&d[i].data)||0)+t*ar[i]
+    //       }
+    //       ele.attr('d',d=>line(da))
+    //     }
+    //   }
+    //
+    //   for(var i=0;i<arg.length-1;i++){
+    //     ar[i] = arg[i].data-d[i+1].data
+    //   }
+    //
+    //   return (t)=>{
+    //     var da = Object.assign([],arg)
+    //     for(var i=0;i<ar.length;i++){
+    //       da[i].data = d[i+1].data+t*ar[i]
+    //     }
+    //     ele.attr('d',d=>line(da))
+    //   }
+    // }).each('end',function(){
+    //   d3.select(this).datum(arg)
+    // })
+    //.attr('d',d=>line(d))
   };
 };
 
