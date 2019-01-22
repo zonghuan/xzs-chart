@@ -163,3 +163,5 @@ window.setInterval(()=>{
 ````
 
 #### [实际效果](https://zonghuan.github.io/xzs-chart/dist/columnar.html)
+
+[test url](https://www.kujiale.com/xiaoguotu/pano/3FO3FJ9ONV9R)
