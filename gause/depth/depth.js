@@ -147,7 +147,7 @@ promise.then(list => {
     wrap.innerHTML = `
         <div class="wrap">
             <div class="line">
-                <span>focal :</span> <input type="range" id="focal" min="1" max="100" value="1" step="1"/><span id="focalShow"></span>
+                <span>模糊直径 :</span> <input type="range" id="focal" min="1" max="100" value="1" step="1"/><span id="focalShow"></span>
             </div>
         </div>
     `;
@@ -161,12 +161,6 @@ promise.then(list => {
     wrap.style.backgroundColor = '#eee';
     wrap.style.boxShadow = '-2px -2px 2px rgba(0,0,0,.1)';
     wrap.style.padding = '20px 20px';
-
-    const line = document.createElement('div');
-    line.className = 'line';
-    line.innerHTML =`
-        <span>模糊直径 :</span> <input type="range" id="focal" min="200" max="500" value="300" step="1"/><span id="focalShow"></span>
-    `;
 
     const changeCall = (e) => {
         const focal = document.getElementById('focal');

@@ -210,7 +210,7 @@ var promise = loadImages(['https://qhyxpicoss.kujiale.com/r/2019/01/15/L3D186S8E
 promise.then(function (list) {
 
     var wrap = document.createElement('div');
-    wrap.innerHTML = "\n        <div class=\"wrap\">\n            <div class=\"line\">\n                <span>focal :</span> <input type=\"range\" id=\"focal\" min=\"1\" max=\"100\" value=\"1\" step=\"1\"/><span id=\"focalShow\"></span>\n            </div>\n        </div>\n    ";
+    wrap.innerHTML = "\n        <div class=\"wrap\">\n            <div class=\"line\">\n                <span>\u6A21\u7CCA\u76F4\u5F84 :</span> <input type=\"range\" id=\"focal\" min=\"1\" max=\"100\" value=\"1\" step=\"1\"/><span id=\"focalShow\"></span>\n            </div>\n        </div>\n    ";
     document.body.appendChild(wrap);
 
     wrap.className = 'wrap';
@@ -221,10 +221,6 @@ promise.then(function (list) {
     wrap.style.backgroundColor = '#eee';
     wrap.style.boxShadow = '-2px -2px 2px rgba(0,0,0,.1)';
     wrap.style.padding = '20px 20px';
-
-    var line = document.createElement('div');
-    line.className = 'line';
-    line.innerHTML = "\n        <span>\u6A21\u7CCA\u76F4\u5F84 :</span> <input type=\"range\" id=\"focal\" min=\"200\" max=\"500\" value=\"300\" step=\"1\"/><span id=\"focalShow\"></span>\n    ";
 
     var changeCall = function changeCall(e) {
         var focal = document.getElementById('focal');
