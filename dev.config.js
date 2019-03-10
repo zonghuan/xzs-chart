@@ -5,7 +5,8 @@ var entry = {
   "circle":"./example/circle.js",
   "line":"./example/line.js",
   'dashBoard':'./example/dashBoard.js',
-  'columnar':'./example/columnar.js'
+  'columnar':'./example/columnar.js',
+  'depth':'./gause/depth/depth.js'
 }
 var plugins = []
 
