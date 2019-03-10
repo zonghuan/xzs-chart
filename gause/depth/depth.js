@@ -165,7 +165,7 @@ promise.then(list => {
     const line = document.createElement('div');
     line.className = 'line';
     line.innerHTML =`
-        <span>focal :</span> <input type="range" id="focal" min="200" max="500" value="300" step="1"/><span id="focalShow"></span>
+        <span>模糊直径 :</span> <input type="range" id="focal" min="200" max="500" value="300" step="1"/><span id="focalShow"></span>
     `;
 
     const changeCall = (e) => {

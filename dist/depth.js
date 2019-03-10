@@ -224,7 +224,7 @@ promise.then(function (list) {
 
     var line = document.createElement('div');
     line.className = 'line';
-    line.innerHTML = "\n        <span>focal :</span> <input type=\"range\" id=\"focal\" min=\"200\" max=\"500\" value=\"300\" step=\"1\"/><span id=\"focalShow\"></span>\n    ";
+    line.innerHTML = "\n        <span>\u6A21\u7CCA\u76F4\u5F84 :</span> <input type=\"range\" id=\"focal\" min=\"200\" max=\"500\" value=\"300\" step=\"1\"/><span id=\"focalShow\"></span>\n    ";
 
     var changeCall = function changeCall(e) {
         var focal = document.getElementById('focal');
