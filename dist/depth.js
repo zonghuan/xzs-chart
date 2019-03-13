@@ -107,11 +107,11 @@ var loadShader = function loadShader(gl, type, source) {
 
 var canvas = document.createElement('canvas');
 
-canvas.width = 960;
-canvas.height = 500;
+canvas.width = 1920;
+canvas.height = 1080;
 
-canvas.style.width = "960px";
-canvas.style.height = "540px";
+canvas.style.width = "1920px";
+canvas.style.height = "1080px";
 canvas.style.boxShadow = '0 0 5px rgba(0,0,0,.2)';
 
 document.body.appendChild(canvas);
