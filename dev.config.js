@@ -6,7 +6,8 @@ var entry = {
   "line":"./example/line.js",
   'dashBoard':'./example/dashBoard.js',
   'columnar':'./example/columnar.js',
-  'depth':'./gause/depth/depth.js'
+  'depth':'./gause/depth/depth.js',
+  'advanceDepth':'./gause/advanceDepth/depth.js'
 }
 var plugins = []
 
